@@ -1,0 +1,94 @@
+<?php
+//----------------------
+//Copyright Dmitry Serov
+//----------------------
+
+include '../db_connect.php';
+ 
+$start = microtime(true);
+
+//Работаем с БД
+$dbconn = pg_connect("host=".HOST." dbname=".NAME_BD." user=".USER." password=".'PASSWORD') or die(pg_last_error());
+
+$sql = "SELECT id, tags->'route' as route, tags->'ref' as ref, tags->'name' as name, tags->'operator' as operator, tags->'network' as network, tags->'from' as from, tags->'to' as to FROM relations WHERE tags->'type'='route' ORDER BY route, substring(tags->'ref' from '^\\d+')::int";
+
+$result = pg_query($sql) or die(pg_last_error());
+
+echo "<table border width='100%'>";
+echo "<tr>
+<td>id</td>
+<td>Тип</td>
+<td>Номер</td>
+<td>Название</td>
+<td>Откуда</td>
+<td>Куда</td>
+<td>Оператор</td>
+<td>Название сети</td>
+</tr>";
+    
+while ($row = pg_fetch_assoc($result)){
+	
+	echo "<tr>
+			<td><a href=http://www.openstreetmap.org/relation/".$row['id'].">" . $row['id'] . "</a></td>";
+		if ($row['route']=="") {
+			echo "<td bgcolor=".COLOR_1.">" . EMPTY_VALUE . "</td>";
+		} else {
+			echo "<td>" . $row['route'] . "</td>";
+		}
+
+
+		if ($row['ref']=="") {
+			echo "<td bgcolor=".COLOR_1.">" . EMPTY_VALUE . "</td>";
+		} else {
+			echo "<td>" . $row['ref'] . "</td>";
+		}
+
+		if ($row['name']=="") {
+			echo "<td bgcolor=".COLOR_1.">" . EMPTY_VALUE . "</td>";
+		} else {
+			echo "<td>" . $row['name'] . "</td>";
+		}
+
+		if ($row['from']=="") {
+			echo "<td bgcolor=".COLOR_1.">" . EMPTY_VALUE . "</td>";
+		} else {
+			echo "<td>" . $row['from'] . "</td>";
+		}
+
+		if ($row['to']=="") {
+			echo "<td bgcolor=".COLOR_1.">" . EMPTY_VALUE . "</td>";
+		} else {
+			echo "<td>" . $row['to'] . "</td>";
+		}
+
+		if ($row['operator']=="") {
+			echo "<td bgcolor=".COLOR_2.">" . EMPTY_VALUE . "</td>";
+		} else {
+			echo "<td>" . $row['operator'] . "</td>";
+		}
+
+		if ($row['network']=="") {
+			echo "<td bgcolor=".COLOR_2.">" . EMPTY_VALUE . "</td>";
+		} else {
+			echo "<td>" . $row['network'] . "</td>";
+		}
+			
+			echo "</tr>";
+		
+  $pt_count++;
+}
+
+echo "</table>";
+
+// Очистка результата
+pg_free_result($result);
+
+// Закрытие соединения
+pg_close($dbconn);
+
+echo "Всего маршрутов: " . $pt_count . "<br>";
+
+$time = microtime(true) - $start;
+printf('Время выполнения: %.4F сек.', $time);
+ 
+?>

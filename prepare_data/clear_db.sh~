@@ -1,0 +1,6 @@
+#!/bin/bash
+cd $(dirname $(readlink -e $0))
+. ./config.sh
+
+sudo -u $db_user -H -- psql -d $db_name -f "sql_scripts/pgsnapshot_schema_0.6.sql"
+
