@@ -1,6 +1,0 @@
-#!/bin/bash
-osmosis/bin/osmosis \
---read-pbf file="output/ru-routes.osm.pbf" \
-
-echo "Выборка необходимых данных в БД"
---write-pgsql database=osm-ru user=postgres password="aryl snbe oevr yrfl"

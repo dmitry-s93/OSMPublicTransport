@@ -1,8 +1,0 @@
-#!/bin/bash
-cd $(dirname $(readlink -e $0))
-. ./config.sh
-
-pg_restore -d $db_name -U $db_user -t "regions" -v "prepared_data/mydb.backup"
-pg_restore -d $db_name -U $db_user -t "regions" -v "prepared_data/mydb.backup"
-
-echo "Все операции завершены"
