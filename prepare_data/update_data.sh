@@ -5,7 +5,7 @@ cd $(dirname $(readlink -e $0))
 echo "#############################"
 echo "#  Начало обработки данных  #"
 echo "#############################"
-#. ./sh_scripts/routes_data.sh
+. ./sh_scripts/routes_data.sh
 
 echo "#############################"
 echo "#       Очистка БД#         #"
