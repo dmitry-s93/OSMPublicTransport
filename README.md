@@ -15,12 +15,12 @@
 	CustomLog ${APACHE_LOG_DIR}/osm-public-transport-access.log combined
 </VirtualHost>
 ```
-Кладем этот конфиг по адресу /etc/apache2/sites-available
+Кладем этот файл по адресу: `/etc/apache2/sites-available`
 
 Включаем сайт:
 `sudo a2ensite osm-public-transport.conf`
 
-Перезапускаем Apache
+Перезапускаем Apache:
 `sudo service apache2 restart`
 
 Добавляем следующую строку в файл /etc/hosts :
