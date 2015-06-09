@@ -5,7 +5,7 @@
 Устанавливаем Apache, PHP:
 `sudo apt-get install apache2 php5`
 
-Создаем конфигурационный файл osm-public-transport.conf примерно следующего содержания, где /var/www/osm-public-transport - путь до содержимого каталога www:
+Создаем конфигурационный файл *osm-public-transport.conf* примерно следующего содержания, где */var/www/osm-public-transport* - путь до содержимого каталога *www*:
 ```
 <VirtualHost *:80>
 	ServerName osm-public-transport
@@ -30,4 +30,30 @@
 `http://osm-public-transport/`
 
 ## Настройка базы данных
-TODO
+Устанавливаем PostgreSQL с PostGIS:
+`sudo apt-get install postgresql-9.3-postgis-2.1 postgresql-contrib php5-pgsql`
+
+В процессе установки автоматически будет создан пользователь *postgres*.
+
+Назначаем пароль пользователю *postgres*:
+`sudo passwd postgres`
+
+Заходим под пользователем *postgres*:
+`su postgres`
+
+Вводим:
+`psql`
+
+Создаем базу данных и пользователя:
+```
+CREATE DATABASE osm_pt_ru;
+
+CREATE USER pt_user WITH password 'pt_password';
+
+GRANT ALL privileges ON DATABASE osm_pt_ru TO pt_user;
+```
+
+Прописываем параметры БД в файле проекта *www/include/db_connect.php*.
+
+## Подготовка и заливка данных
+См. *README.md* в каталоге *prepare_data*.
