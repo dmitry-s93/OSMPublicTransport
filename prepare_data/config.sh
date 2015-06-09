@@ -1,9 +1,9 @@
-osmosis_bin_path="/home/dmitry/osmosis/bin/osmosis"
+osmosis_bin_path="/home/user/osmosis/bin/osmosis"
 
-input_file_path="/home/dmitry/OSM_data/RU.osm.pbf"
-output_file_path="/home/dmitry/OSM_data/ru-routes.osm.pbf"
+input_file_path="/home/user/osm_data/RU.osm.pbf"
+output_file_path="/home/user/osm_data/routes-ru.osm.pbf"
 temp_path="/tmp"
 
-db_name="OSMPublicTransport"
-db_user="postgres"
-db_password="password"
+db_name="osm_pt_ru"
+db_user="pt_user"
+db_password="pt_password"
