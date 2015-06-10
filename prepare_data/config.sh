@@ -1,7 +1,7 @@
-osmosis_bin_path="~/osmosis-latest/bin/osmosis"
+osmosis_bin_path="/home/user/osmosis-latest/bin/osmosis"
 
-input_file_path="~/osm_data/RU.osm.pbf"
-output_file_path="~/osm_data/routes-ru.osm.pbf"
+input_file_path="/home/user/osm_data/RU.osm.pbf"
+output_file_path="/home/user/osm_data/routes-ru.osm.pbf"
 temp_path="/tmp"
 
 db_host="localhost"
