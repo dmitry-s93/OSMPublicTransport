@@ -1,8 +1,6 @@
--- ﻿Updated 02.06.2015
-
 -- Drop all tables if they exist.
---DROP TABLE IF EXISTS regions;
---DROP TABLE IF EXISTS places;
+DROP TABLE IF EXISTS regions;
+DROP TABLE IF EXISTS places;
 DROP TABLE IF EXISTS transport_routes;
 DROP TABLE IF EXISTS transport_route_master;
 DROP TABLE IF EXISTS transport_stops;

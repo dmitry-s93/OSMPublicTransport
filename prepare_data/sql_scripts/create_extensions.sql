@@ -1,6 +1,6 @@
--- Enable PostGIS (includes raster)
-CREATE EXTENSION postgis;
+-- Enable PostGIS
+CREATE EXTENSION IF NOT EXISTS postgis;
 -- Enable Topology
-CREATE EXTENSION postgis_topology;
+CREATE EXTENSION IF NOT EXISTS postgis_topology;
 -- Enable hstore
-CREATE EXTENSION hstore;
+CREATE EXTENSION IF NOT EXISTS hstore;
