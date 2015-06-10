@@ -1,7 +1,7 @@
 <?php
 include_once ('include/config.php');
 
-$dbconn = pg_connect("host=".HOST." dbname=".NAME_BD." user=".USER." password=".'PASSWORD') or die(pg_last_error());
+$dbconn = pg_connect("host=".HOST." dbname=".NAME_BD." user=".USER." password='".PASSWORD."'") or die(pg_last_error());
 
 $r_id = $_GET['id'];
 	
