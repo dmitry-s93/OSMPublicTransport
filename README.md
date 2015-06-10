@@ -53,6 +53,24 @@ CREATE USER pt_user WITH password 'pt_password';
 GRANT ALL privileges ON DATABASE osm_pt_ru TO pt_user;
 ```
 
+Для выхода вводим:
+`\q`
+
+Вводим:
+`psql osm_pt_ru`
+
+Загружаем необходимые расширения:
+```
+CREATE EXTENSION postgis;
+
+CREATE EXTENSION postgis_topology;
+
+CREATE EXTENSION hstore;
+```
+
+Для выхода вводим:
+`\q`
+
 Прописываем параметры БД в файле проекта *www/include/db_connect.php*.
 
 ## Подготовка и заливка данных
