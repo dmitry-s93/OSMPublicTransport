@@ -31,7 +31,7 @@
 
 ## Настройка базы данных
 Устанавливаем PostgreSQL с PostGIS:
-`sudo apt-get install postgresql-9.3-postgis-2.1 postgresql-contrib php5-pgsql`
+`sudo apt-get install postgresql-9.4-postgis-2.1 postgresql-contrib php5-pgsql`
 
 В процессе установки автоматически будет создан пользователь *postgres*.
 
