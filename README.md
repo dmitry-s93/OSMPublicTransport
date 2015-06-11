@@ -3,7 +3,9 @@
 
 ## Настройка веб-сервера
 Устанавливаем Apache, PHP:
-`sudo apt-get install apache2 php5`
+```
+sudo apt-get install apache2 php5
+```
 
 Создаем конфигурационный файл *osm-public-transport.conf* примерно следующего содержания, где */var/www/osm-public-transport* - путь до содержимого каталога *www*:
 ```
@@ -15,37 +17,49 @@
 	CustomLog ${APACHE_LOG_DIR}/osm-public-transport-access.log combined
 </VirtualHost>
 ```
-Кладем этот файл по адресу: `/etc/apache2/sites-available`
+Кладем этот файл по адресу: */etc/apache2/sites-available*
 
 Включаем сайт:
-`sudo a2ensite osm-public-transport.conf`
+```
+sudo a2ensite osm-public-transport.conf
+```
 
 Перезапускаем Apache:
-`sudo service apache2 restart`
+```
+sudo service apache2 restart
+```
 
 Добавляем следующую строку в файл /etc/hosts :
-`127.0.0.1 osm-public-transport`
+```
+127.0.0.1 osm-public-transport
+```
 
-Теперь сайт доступен по адресу:
-`http://osm-public-transport/`
+Теперь сайт доступен по адресу: *http://osm-public-transport/*
 
 ## Настройка базы данных
 Устанавливаем PostgreSQL с PostGIS:
-`sudo apt-get install postgresql-9.4-postgis-2.1 postgresql-contrib php5-pgsql`
+```
+sudo apt-get install postgresql-9.4-postgis-2.1 postgresql-contrib php5-pgsql
+```
 
 Перезапускаем Apache:
-`sudo service apache2 restart`
+```
+sudo service apache2 restart
+```
 
 В процессе установки *PostgreSQL* автоматически был создан пользователь *postgres*.
 
 Назначаем пароль пользователю *postgres*:
-`sudo passwd postgres`
+```
+sudo passwd postgres
+```
 
 Заходим под пользователем *postgres*:
-`su postgres`
+```
+su postgres
+```
 
-Вводим:
-`psql`
+Вводим:`psql'
 
 Создаем базу данных и пользователя:
 ```
@@ -56,11 +70,9 @@ CREATE USER pt_user WITH password 'pt_password';
 GRANT ALL privileges ON DATABASE osm_pt_ru TO pt_user;
 ```
 
-Для выхода вводим:
-`\q`
+Для выхода вводим:`\q`
 
-Вводим:
-`psql osm_pt_ru`
+Вводим:`psql osm_pt_ru`
 
 Загружаем необходимые расширения:
 ```
@@ -71,8 +83,7 @@ CREATE EXTENSION postgis_topology;
 CREATE EXTENSION hstore;
 ```
 
-Для выхода вводим:
-`\q`
+Для выхода вводим:`\q`
 
 Прописываем параметры БД в файле проекта *www/include/db_connect.php*.
 
