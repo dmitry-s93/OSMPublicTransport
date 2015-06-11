@@ -33,7 +33,10 @@
 Устанавливаем PostgreSQL с PostGIS:
 `sudo apt-get install postgresql-9.4-postgis-2.1 postgresql-contrib php5-pgsql`
 
-В процессе установки автоматически будет создан пользователь *postgres*.
+Перезапускаем Apache:
+`sudo service apache2 restart`
+
+В процессе установки *PostgreSQL* автоматически был создан пользователь *postgres*.
 
 Назначаем пароль пользователю *postgres*:
 `sudo passwd postgres`
