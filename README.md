@@ -59,7 +59,7 @@ sudo passwd postgres
 su postgres
 ```
 
-Вводим:`psql'
+Вводим:`psql`
 
 Создаем базу данных и пользователя:
 ```
