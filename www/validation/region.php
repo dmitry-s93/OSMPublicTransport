@@ -19,14 +19,14 @@ SELECT DISTINCT
 	places.id,
 	places.type,
 	places.name
-FROM places, transport_location, relations
+FROM places, transport_location, transport_routes
 WHERE 
 	places.region_id='".$r_id."' and
 	places.type in ('city','town') and
 	places.id in (transport_location.place_id) and
-	transport_location.route_id=relations.id and
-	relations.tags->'route' in (".PUBLIC_TRANSPORT.") and
-	relations.tags->'ref'<>''
+	transport_location.route_id=transport_routes.id and
+	transport_routes.tags->'route' in (".PUBLIC_TRANSPORT.") and
+	transport_routes.tags->'ref'<>''
 ORDER BY type, name
 	") or die(mysql_error());
 	
@@ -35,14 +35,14 @@ SELECT DISTINCT
 	places.id,
 	places.type,
 	places.name
-FROM places, transport_location, relations
+FROM places, transport_location, transport_routes
 WHERE 
 	places.region_id='".$r_id."' and
 	places.type='village' and
 	places.id in (transport_location.place_id) and
-	transport_location.route_id=relations.id and
-	relations.tags->'route' in (".PUBLIC_TRANSPORT.") and
-	relations.tags->'ref'<>''
+	transport_location.route_id=transport_routes.id and
+	transport_routes.tags->'route' in (".PUBLIC_TRANSPORT.") and
+	transport_routes.tags->'ref'<>''
 ORDER BY type, name
 	") or die(mysql_error());
 
