@@ -56,18 +56,10 @@ function SetMapURL(e) {
 }
 
 function zoomToFeature(e) {
-	map.fitBounds(e.target.getBounds());
+	map.fitBounds(L.geoJson(e).getBounds());
 }
 
 function onEachFeature(feature, layer) {	
-	//if (feature.properties && feature.properties.type == 'route') {
-		//Test = layer;
-		//layer.on({
-				////mouseover: zoomToFeature,
-				////mouseout: zoomToFeature,
-				//click: zoomToFeature
-			//});	
-	//}
 			
 	var popupContent;
 
@@ -175,6 +167,8 @@ if ((typeof geojsonRoute !== "undefined") || (typeof geojsonStops !== "undefined
 		layers: [MapSurferLayer, RouteLayer, StopsLayer, PlatformsLayer]
 	});
 	
+	zoomToFeature(geojsonRoute);
+	
 	var overlays = {
 		"Общественный транспорт": PTLayer,
 		"Маршрут": RouteLayer,
@@ -182,7 +176,6 @@ if ((typeof geojsonRoute !== "undefined") || (typeof geojsonStops !== "undefined
 		"Остановки (Платформы)": PlatformsLayer
 	};
 	
-	map.fitBounds(L.geoJson(geojsonRoute).getBounds());
 } else
 {
 	var map = L.map('map', {

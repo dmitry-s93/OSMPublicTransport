@@ -1,61 +1,50 @@
 body{
-	background-image: url(../images/background/gplaypattern.png);
-    background-color: f0f0f0 ;
+    background-color: f0f0f0;
+    display: initial;
    }  
 
 div#block {
 	width:100%;
-	min-width:680px;
-	max-width:1200px;
+	height:100%;
+	min-width:700px;
 	margin:0 auto;
-	/*background-color:#D7E8FF;*/
-	/*border: 1px solid #489CF3;*/
-	border-radius: 10px;
-	box-shadow: 8px 8px 6px rgba(0,0,0,0.6);
 }
 
 div.header {
 	width:100%;
-	min-height:120px;
-	max-height:200px;
-	line-height:20px;
+	height:40px;
+	line-height:10px;
 	display:inline-block;
-	background-color:#D7E8FF;
-	border: 1px solid #489CF3;
+	background-color:#FFC34B;
 	border-bottom: 0px;
-	border-radius: 10px 10px 0px 0px;
-	background-image: url(../images/background/congruent_pentagon.png);
 }
 
 div.menu {
 	width:100%;
-	height:62px;
-	border-left: 1px solid #489CF3;
-	border-right: 1px solid #489CF3;
-	/*background-color:#B17dc9 */
+	height:52px;
+	border-top: 2px solid #114477;
+	border-bottom: 6px solid #FFC34B;
 }
 
 div.body {
 	width:100%;
+	height:calc(100% - 150px);
 	min-height:500px;
 	padding-left:0px;
 	display:inline-block;
-	background: #FFFFFF;
-	border-left: 1px solid #489CF3;
-	border-right: 1px solid #489CF3;
-	/*background-image: url(../images/background/paper.png);*/
+	background: #FFFFFF;	
+	overflow: auto;
 }
 
 div.footer {
 	width:100%;
-	height:56px;
+	height:44px;
+	line-height:10px;
 	background-color:#489CF3;
 	clear:both;
 	display:inline-block;
 	text-align:center;
-	border: 1px solid #489CF3;
 	border-top: 6px solid #FFC34B;
-	border-radius: 0px 0px 10px 10px;
 }
 
 
@@ -64,27 +53,23 @@ ul.horizontal_menu {
 	margin-bottom:0px;	
 	margin-top:0px;			
 	list-style: none;
-	border-bottom: 6px solid #FFC34B;
-	border-top: 1px solid #114477;
-	padding: 16px 14px 20px 14px;
+	padding: 16px 14px 18px 14px;
 	background: #489CF3
 }
 
 ul.horizontal_menu li {
 	display: inline;
-	padding: 0px 4px;
-	/*font-weight: bold;*/
+	padding: 0px 2px;
 }
 
 ul.horizontal_menu li a {
-	color: #0066CC;
+	color: #1A1A1A;
 	text-decoration: none;	
 	background: #CCE6FF;
 	margin: 0; 
 	padding: 10px 14px 10px 14px;
 	border-radius: 4px 4px;
 	box-shadow: 4px 4px 3px rgba(0,0,0,0.6);
-	/*text-shadow: 2px 2px 4px #4D4D4D; */
 }
 
 ul.horizontal_menu li a:hover {
@@ -96,15 +81,13 @@ ul.horizontal_menu li a:hover {
 
 ul.horizontal_menu li a.selected {
 	color: #FFFFFF;
-	background: radial-gradient(#3399FF, #287BCC);
-	/*background: #2885CC;*/
+	background: #287BCC;
 	box-shadow: 3px 3px 2px rgba(0,0,0,0.6);
 }
 
 
 /* Content */
 h1 {
-	/*line-height: 65%;*/
 	height: 30px;
 	color: #009900;
 	text-shadow: 1px 1px 2px black;
@@ -174,10 +157,4 @@ tr.highlight:hover {
 }
 td.warning {
 	background: #FF8080;
-}
-
-/* Map */
-div.map {
-	width: 100%;
-	height: 600px;
 }
