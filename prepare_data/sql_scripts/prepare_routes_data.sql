@@ -84,31 +84,33 @@ BEGIN;
 	-- Линии и полигоны
 	INSERT INTO transport_stops (id,tstamp,tags,geom)
 	SELECT
-		id,
-		tstamp,
-		tags,
-		(case when ST_IsRing(ST_MakeLine(nodes.geom)) is true then ST_BuildArea(ST_MakeLine(nodes.geom))
-			else (ST_MakeLine(nodes.geom)) end) as geom
+		stops.id,
+		ways.tstamp,
+		ways.tags,
+		stops.geom
 	FROM
+		ways,
 		(SELECT
-			ways.id,
-			ways.tstamp,
-			ways.tags,
-			t_nodes.node_pos,
-			nodes.geom as geom
-		FROM ways, unnest(ways.nodes) WITH ORDINALITY AS t_nodes(node_id,node_pos), nodes
-		WHERE
-			(ways.tags->'public_transport' in ('platform','station') or
-			ways.tags->'amenity'='bus_station' or
-			ways.tags->'railway'='station') and
-			nodes.id=t_nodes.node_id
-		ORDER BY
 			id,
-			t_nodes.node_pos) as nodes
-	GROUP BY
-		id,
-		tstamp,
-		tags;
+			(case when ST_IsRing(ST_MakeLine(nodes.geom)) is true then ST_BuildArea(ST_MakeLine(nodes.geom))
+				else (ST_MakeLine(nodes.geom)) end) as geom
+		FROM
+			(SELECT
+				ways.id,
+				t_nodes.node_pos,
+				nodes.geom as geom
+			FROM ways, unnest(ways.nodes) WITH ORDINALITY AS t_nodes(node_id,node_pos), nodes
+			WHERE
+				(ways.tags->'public_transport' in ('platform','station') or
+				ways.tags->'amenity'='bus_station' or
+				ways.tags->'railway'='station') and
+				nodes.id=t_nodes.node_id
+			ORDER BY
+				id,
+				t_nodes.node_pos) as nodes
+		GROUP BY id) as stops
+	WHERE
+		ways.id=stops.id;
 END;
 
 ------------------------------------------------------------------------
