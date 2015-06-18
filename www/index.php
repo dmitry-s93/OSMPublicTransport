@@ -9,13 +9,10 @@ $output="
 		<!--[if lt IE 9]>
 			<link rel='stylesheet' href='template/css/L.Control.Locate.ie.min.css'/>
 		<![endif]-->
-
-		<div id='map' class='map'></div>
+	
 		<script src='template/js/leaflet.js'></script>
 		<script src='template/js/Control.FullScreen.js'></script>
-		<script src='template/js/L.Control.Locate.min.js' ></script>
-
-		<script>";
+		<script src='template/js/L.Control.Locate.min.js' ></script>";
 
 if (isset($_GET['id'])) {
 	$r_id = $_GET['id'];
@@ -62,6 +59,8 @@ if (isset($_GET['id'])) {
 		relation_members.member_role in ('platform','platform_entry_only','platform_exit_only')
 	");
 
+	$output.="<script>";
+
 	while ($row_route = pg_fetch_assoc($sql_route)){
 
 		if ($row_route['route_from']<>'' and $row_route['route_to']<>'') {
@@ -82,64 +81,92 @@ if (isset($_GET['id'])) {
 						'description': 'Протяженность маршрута: ".round($row_route['length']/1000,3)." км.'
 					},
 					'geometry': ".$row_route['geom']."
-				},";
+				}";
 		}
 	}
 
-	$output.="
-	geojsonStops = { 'type': 'FeatureCollection','features': [";
-	while ($row_stops = pg_fetch_assoc($sql_stops)){
-		if ($row_stops['geom'] != "") {
-
-			//switch ($row_stops['role']) {
-				//case 'platform_entry_only': $description = "Только вход"; break;
-				//case 'platform_exit_only': $description = "Только выход"; break;
-				//default: $description = ""; break;
-			//}
-
-			$output.="
-				{
-					'type': 'Feature',
-					'properties': {
-						'type': '".$row_stops['role']."',
-						'name': '".$row_stops['name']."',
-						'description':'Место остановки'
-					},
-					'geometry': ".$row_stops['geom']."
-				},";
-			}
+	if (pg_num_rows($sql_stops) > 0) {
+		$output.="
+		geojsonStops = { 'type': 'FeatureCollection','features': [";
+		while ($row_stops = pg_fetch_assoc($sql_stops)){
+			if ($row_stops['geom'] != "") {
+				$output.="
+					{
+						'type': 'Feature',
+						'properties': {
+							'type': 'stop_position',
+							'name': '".$row_stops['name']."',
+							'description':'Место остановки'
+						},
+						'geometry': ".$row_stops['geom']."
+					},";
+				}
+		}
+		$output.="]}";
 	}
-	$output.="]}";
 
-	$output.="
-	geojsonPlatforms = { 'type': 'FeatureCollection','features': [";
-	while ($row_platforms = pg_fetch_assoc($sql_platforms)){
-		if ($row_platforms['geom'] != "") {
+	if (pg_num_rows($sql_platforms) > 0) {
+		$output.="
+		geojsonPlatforms = { 'type': 'FeatureCollection','features': [";
+		while ($row_platforms = pg_fetch_assoc($sql_platforms)){
+			if ($row_platforms['geom'] != "") {
+				switch ($row_platforms['role']) {
+					case 'platform_entry_only': $description = "Только вход"; break;
+					case 'platform_exit_only': $description = "Только выход"; break;
+					default: $description = ""; break;
+				}
 
-			switch ($row_platforms['role']) {
-				case 'platform_entry_only': $description = "Только вход"; break;
-				case 'platform_exit_only': $description = "Только выход"; break;
-				default: $description = ""; break;
-			}
-
-			$output.="
-				{
-					'type': 'Feature',
-					'properties': {
-						'type': '".$row_platforms['role']."',
-						'name': '".$row_platforms['name']."',
-						'description':'".$description."'
-					},
-					'geometry': ".$row_platforms['geom']."
-				},";
-			}
+				$output.="
+					{
+						'type': 'Feature',
+						'properties': {
+							'type': 'platform',
+							'name': '".$row_platforms['name']."',
+							'description':'".$description."'
+						},
+						'geometry': ".$row_platforms['geom']."
+					},";
+				}
+		}
+		$output.="]}";
 	}
-	$output.="]}";
+	
+	$output.="</script>";
+	
+	$output.="	
+	<script type='text/javascript'>
+		function SetList() {
+			var list_id = document.getElementById('SelectList').selectedIndex;		
+			if (list_id == 0) {
+				document.getElementById('platform-list').style.display = 'block';
+				document.getElementById('stop-position-list').style.display = 'none';
+			}
+			if (list_id == 1) {
+				document.getElementById('platform-list').style.display = 'none';
+				document.getElementById('stop-position-list').style.display = 'block';
+			}
+		}
+	</script>
+	
+	<div class='info_panel'>
+		<h3><a href='#' onclick='zoomToFeature(geojsonRoute);'>".$route_name."</a></h3>		
+		<form action='' align='center'>
+				<select id='SelectList' onchange='SetList()'>
+					<option value='platform'> Остановки / платформы </option>
+					<option value='stop_position'> Места остановок </option>
+				</select>
+		</form>	
+		<ol id='platform-list' class='marker-list'></ol>
+		<ol id='stop-position-list' class='marker-list' style='display: none;'></ol>
+	</div>
+	<div id='map' class='route_map'></div>";	
+} else {
+	$output.="
+	<div id='map' class='map'></div>
+	";	
 }
 
-$output.="
-		</script>
-		<script src='template/js/map.js'></script>";
+$output.="<script src='template/js/map.js'></script>";
 
 $page_title="Карта маршрутов общественного транспорта";
 $page = 'main';		

@@ -23,17 +23,17 @@ var RouteLayer = new L.LayerGroup();
 var StopsLayer = new L.LayerGroup();
 var PlatformsLayer = new L.LayerGroup();
 
-function onBaselayerChange(e) {
+
+function onBaselayerChange() {
     switch (true) {
 		case map.hasLayer(MapSurferLayer): MapBaseLayer = 'S'; break;
 		case map.hasLayer(SputnikRuLayer): MapBaseLayer = 'K'; break;
 		case map.hasLayer(MapnikLayer): MapBaseLayer = 'M'; break;
-	}	
-	//alert(Layer);
+	}
 	SetMapURL();
 }
 
-function BaselayerChange(e) {
+function BaselayerChange() {
     switch (true) {
 		case map.hasLayer(MapSurferLayer): map.removeLayer(MapSurferLayer); break;
 		case map.hasLayer(SputnikRuLayer): map.removeLayer(SputnikRuLayer); break;
@@ -52,37 +52,65 @@ function SetMapURL(e) {
 	MapUrl= '#map='+map.getZoom()+'/'+map.getCenter().lat.toFixed(4)+'/'+map.getCenter().lng.toFixed(4)+'&layer='+MapBaseLayer;
 	location.replace(MapUrl);		
 	document.cookie = "OSMPublicTransport="+MapUrl;	
-	//alert(document.cookie);
 }
 
 function zoomToFeature(e) {
 	map.fitBounds(L.geoJson(e).getBounds());
 }
 
-function onEachFeature(feature, layer) {	
-			
+function onEachFeature(feature, layer) {
+	
 	var popupContent;
 
 	if (feature.properties) {
+		
 		if (feature.properties.type == 'route') {
 			popupContent = "<b>" + feature.properties.name + "</b>";
 			popupContent += "<hr>";
 			popupContent += feature.properties.description;
 		}
-		if (feature.properties.type != 'route') {
+		if ((feature.properties.type == 'platform') || (feature.properties.type == 'stop_position')) {
+			
+			if (feature.properties.name == "") {
+				feature.properties.name = "Без названия";
+			}
+			
 			popupContent = "<b>" + feature.properties.name + "</b>";
 			popupContent += "<hr>";
 			popupContent += feature.properties.description;
 		}		
 		layer.bindPopup(popupContent);
+		
+		if (feature.properties.type == 'platform') {
+			var item = PlatformList.appendChild(document.createElement('li'));
+			item.innerHTML = feature.properties.name;
+			item.onclick = function() {
+				layer.openPopup();
+			};
+		}
+		
+		if (feature.properties.type == 'stop_position') {
+			var item = StopPositionList.appendChild(document.createElement('li'));
+			item.innerHTML = feature.properties.name;
+			item.onclick = function() {
+				layer.openPopup();
+			};
+		}
+		
 	}
 }
 
 if (typeof geojsonRoute !== "undefined") {
 	L.geoJson(geojsonRoute, {
+		
+		style: {
+			"color": "#1E90FF",
+			"weight": 6,
+			"opacity": 0.6
+		},
+		
 		filter: function (feature, layer) {
 			if (feature.properties) {
-				// If the property "underConstruction" exists and is true, return false (don't render features under construction)
 				return feature.properties.underConstruction !== undefined ? !feature.properties.underConstruction : true;
 			}
 			return false;
@@ -92,48 +120,64 @@ if (typeof geojsonRoute !== "undefined") {
 	}).addTo(RouteLayer);
 }
 
-if (typeof geojsonStops !== "undefined") {
-	L.geoJson(geojsonStops, {
+if ((typeof geojsonStops !== "undefined") || (typeof geojsonPlatforms !== "undefined")) {
+	var PlatformList = document.getElementById('platform-list');
+	var StopPositionList = document.getElementById('stop-position-list');
+	
+	if (typeof geojsonStops !== "undefined") {
+		L.geoJson(geojsonStops, {
 
-		style: function (feature) {
-			return feature.properties && feature.properties.style;
-		},
+			style: function (feature) {
+				return feature.properties && feature.properties.style;
+			},
 
-		onEachFeature: onEachFeature,
+			onEachFeature: onEachFeature,
 
-		pointToLayer: function (feature, latlng) {
-			return L.circleMarker(latlng, {
-				radius: 6,
-				fillColor: "#1E90FF",
-				color: "#000",
-				weight: 1,
-				opacity: 1,
-				fillOpacity: 0.8
-			});
-		}
-	}).addTo(StopsLayer);
-}
+			pointToLayer: function (feature, latlng) {
+				return L.circleMarker(latlng, {
+					radius: 6,
+					fillColor: "#1E90FF",
+					color: "#000",
+					weight: 1,
+					opacity: 1,
+					fillOpacity: 0.8
+				});
+			}
+		}).addTo(StopsLayer);
+	}
 
-if (typeof geojsonPlatforms !== "undefined") {
-	L.geoJson(geojsonPlatforms, {
+	if (typeof geojsonPlatforms !== "undefined") {
+		L.geoJson(geojsonPlatforms, {
+			
+			style: {
+				function (feature) {
+					return feature.properties && feature.properties.style;
+				},
+				"color": "#ff7800",
+				"weight": 5,
+				"opacity": 0.8
+			},
 
-		style: function (feature) {
-			return feature.properties && feature.properties.style;
-		},
+			onEachFeature: onEachFeature,
+			
+			pointToLayer: function (feature, latlng) {
+				return L.circleMarker(latlng, {
+					radius: 6,
+					fillColor: "#ff7800",
+					color: "#000",
+					weight: 1,
+					opacity: 1,
+					fillOpacity: 0.8
+				});
+			}
+		}).addTo(PlatformsLayer);
+	}
 
-		onEachFeature: onEachFeature,
-
-		pointToLayer: function (feature, latlng) {
-			return L.circleMarker(latlng, {
-				radius: 8,
-				fillColor: "#ff7800",
-				color: "#000",
-				weight: 1,
-				opacity: 1,
-				fillOpacity: 0.8
-			});
-		}
-	}).addTo(PlatformsLayer);
+	if (document.getElementById('stop-position-list').childNodes.length > document.getElementById('platform-list').childNodes.length) {
+		document.getElementById("SelectList").options[1].selected=true;
+		document.getElementById('platform-list').style.display = 'none';
+		document.getElementById('stop-position-list').style.display = 'block';
+	}
 }
 
 var OSMAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
@@ -167,14 +211,14 @@ if ((typeof geojsonRoute !== "undefined") || (typeof geojsonStops !== "undefined
 		layers: [MapSurferLayer, RouteLayer, StopsLayer, PlatformsLayer]
 	});
 	
-	zoomToFeature(geojsonRoute);
-	
 	var overlays = {
 		"Общественный транспорт": PTLayer,
 		"Маршрут": RouteLayer,
 		"Места остановок": StopsLayer,
 		"Остановки (Платформы)": PlatformsLayer
 	};
+	
+	zoomToFeature(geojsonRoute);
 	
 } else
 {
@@ -193,10 +237,10 @@ L.control.layers(baseLayers, overlays).addTo(map);
 L.control.scale().addTo(map);
 
 L.control.locate({
-    icon: 'fa fa-map-marker',  // class for icon, fa-location-arrow or fa-map-marker
-    iconLoading: 'fa fa-spinner fa-spin',  // class for loading icon
-    onLocationError: function(err) {alert(err.message)},  // define an error callback function
-    onLocationOutsideMapBounds:  function(context) { // called when outside map boundaries
+    icon: 'fa fa-map-marker',
+    iconLoading: 'fa fa-spinner fa-spin',
+    onLocationError: function(err) {alert(err.message)},
+    onLocationOutsideMapBounds:  function(context) {
             alert(context.options.strings.outsideMapBoundsMsg);
     },
     strings: {
@@ -215,10 +259,5 @@ L.control.fullscreen({
 }).addTo(map);
 
 BaselayerChange();
-
 map.on('baselayerchange', onBaselayerChange);
 map.on('moveend', SetMapURL);
-
-
-
-

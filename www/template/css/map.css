@@ -3,6 +3,47 @@ div.map {
 	height: 100%;
 }
 
+div.route_map {
+	width: calc(100% - 250px);
+	height: 100%;
+	float: right;
+}
+
+div.info_panel {
+	width: 244px;
+	height: 100%;
+	float:left;
+	border-right: 6px solid #FFC34B;
+	overflow: auto;
+}
+
 span.fa {
 	line-height: 26px;
+}
+
+ol.marker-list {
+	bottom:0;
+	overflow-x:auto;
+	background:#fff;
+	margin:0;
+}
+  
+ol.marker-list li {
+	padding:2px;
+	margin:0;
+	/*list-style-type:none;*/
+}
+  
+ol.marker-list li:hover {
+	background: #E5E5E5;
+}
+
+#SelectList {
+	height: 25px;
+	width: 90%;
+}
+
+div.leaflet-popup-content-wrapper {
+	border-radius: 5px;
+	text-align: center;
 }
