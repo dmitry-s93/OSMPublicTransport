@@ -7,6 +7,8 @@ ini_set('display_startup_errors', 1);
 
 include_once ('db_connect.php');
 
+$dbconn = pg_connect("host=".HOST." dbname=".NAME_BD." user=".USER." password='".PASSWORD."'") or die(pg_last_error());
+
 if (!defined('EMPTY_VALUE')) define('EMPTY_VALUE', '-');
 
 if (!defined('TEMPLATE_PATH')) define('TEMPLATE_PATH', '../template/template.html');

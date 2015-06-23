@@ -1,8 +1,6 @@
 <?php
 include_once ('../include/config.php');
 
-$dbconn = pg_connect("host=".HOST." dbname=".NAME_BD." user=".USER." password='".PASSWORD."'") or die(pg_last_error());
-
 $r_place = $_GET['id'];
 $r_type = $_GET['type'];
 $r_ref = $_GET['ref'];

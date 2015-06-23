@@ -9,15 +9,14 @@ $output="
 		<!--[if lt IE 9]>
 			<link rel='stylesheet' href='template/css/L.Control.Locate.ie.min.css'/>
 		<![endif]-->
-	
+
+		<script src='template/js/jquery-2.1.4.min.js'></script>
 		<script src='template/js/leaflet.js'></script>
 		<script src='template/js/Control.FullScreen.js'></script>
 		<script src='template/js/L.Control.Locate.min.js' ></script>";
 
 if (isset($_GET['id'])) {
 	$r_id = $_GET['id'];
-
-	$dbconn = pg_connect("host=".HOST." dbname=".NAME_BD." user=".USER." password='".PASSWORD."'") or die(pg_last_error());
 
 	$sql_route = pg_query("
 	SELECT
@@ -33,6 +32,7 @@ if (isset($_GET['id'])) {
 
 	$sql_stops=pg_query("
 	SELECT
+		transport_stops.id,
 		transport_stops.tags->'name' as name,
 		relation_members.member_role as role,
 		ST_AsGeoJSON(transport_stops.geom) as geom
@@ -42,11 +42,12 @@ if (isset($_GET['id'])) {
 	WHERE
 		relation_members.relation_id=".$r_id." and
 		relation_members.member_id=transport_stops.id and
-		relation_members.member_role = 'stop'
+		relation_members.member_role in ('stop','stop_exit_only','stop_entry_only')
 	");
 
 	$sql_platforms=pg_query("
 	SELECT
+		transport_stops.id,
 		transport_stops.tags->'name' as name,
 		relation_members.member_role as role,
 		ST_AsGeoJSON(transport_stops.geom) as geom
@@ -94,6 +95,7 @@ if (isset($_GET['id'])) {
 					{
 						'type': 'Feature',
 						'properties': {
+							'id':'".$row_stops['id']."',
 							'type': 'stop_position',
 							'name': '".$row_stops['name']."',
 							'description':'Место остановки'
@@ -120,6 +122,7 @@ if (isset($_GET['id'])) {
 					{
 						'type': 'Feature',
 						'properties': {
+							'id':'".$row_platforms['id']."',
 							'type': 'platform',
 							'name': '".$row_platforms['name']."',
 							'description':'".$description."'
@@ -130,13 +133,14 @@ if (isset($_GET['id'])) {
 		}
 		$output.="]}";
 	}
-	
+
 	$output.="</script>";
-	
-	$output.="	
+}
+
+$output.="
 	<script type='text/javascript'>
 		function SetList() {
-			var list_id = document.getElementById('SelectList').selectedIndex;		
+			var list_id = document.getElementById('SelectList').selectedIndex;
 			if (list_id == 0) {
 				document.getElementById('platform-list').style.display = 'block';
 				document.getElementById('stop-position-list').style.display = 'none';
@@ -147,29 +151,28 @@ if (isset($_GET['id'])) {
 			}
 		}
 	</script>
-	
-	<div class='info_panel'>
-		<h3><a href='#' onclick='zoomToFeature(geojsonRoute);'>".$route_name."</a></h3>		
+
+	<div id='map' class='map'></div>
+	<div id='topMessageBox' class='box'></div>
+	<div id='infoPanel' class='box' style='display: none;'>
+		<div id='infoPanelTop'><a href='/'><i class='fa fa-times-circle'></i></a></div>
 		<form action='' align='center'>
 				<select id='SelectList' onchange='SetList()'>
 					<option value='platform'> Остановки / платформы </option>
 					<option value='stop_position'> Места остановок </option>
 				</select>
-		</form>	
-		<ol id='platform-list' class='marker-list'></ol>
-		<ol id='stop-position-list' class='marker-list' style='display: none;'></ol>
+		</form>
+		<div id='infoPanelMiddle'>
+			<ol id='platform-list' class='marker-list'></ol>
+			<ol id='stop-position-list' class='marker-list' style='display: none;'></ol>
+		</div>
 	</div>
-	<div id='map' class='route_map'></div>";	
-} else {
-	$output.="
-	<div id='map' class='map'></div>
-	";	
-}
+	";
 
 $output.="<script src='template/js/map.js'></script>";
 
 $page_title="Карта маршрутов общественного транспорта";
-$page = 'main';		
+$page = 'main';
 include("template/template.html");
 
 ?>

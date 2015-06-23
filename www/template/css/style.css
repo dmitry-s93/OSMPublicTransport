@@ -1,7 +1,7 @@
 body{
     background-color: f0f0f0;
     display: initial;
-   }  
+   }
 
 div#block {
 	width:100%;
@@ -32,7 +32,7 @@ div.body {
 	min-height:500px;
 	padding-left:0px;
 	display:inline-block;
-	background: #FFFFFF;	
+	background: #FFFFFF;
 	overflow: auto;
 }
 
@@ -48,10 +48,10 @@ div.footer {
 }
 
 
-/* Настройка меню */		
+/* Main menu */
 ul.horizontal_menu {
-	margin-bottom:0px;	
-	margin-top:0px;			
+	margin-bottom:0px;
+	margin-top:0px;
 	list-style: none;
 	padding: 16px 14px 18px 14px;
 	background: #489CF3
@@ -64,9 +64,9 @@ ul.horizontal_menu li {
 
 ul.horizontal_menu li a {
 	color: #1A1A1A;
-	text-decoration: none;	
+	text-decoration: none;
 	background: #CCE6FF;
-	margin: 0; 
+	margin: 0;
 	padding: 10px 14px 10px 14px;
 	border-radius: 4px 4px;
 	box-shadow: 4px 4px 3px rgba(0,0,0,0.6);
@@ -75,8 +75,8 @@ ul.horizontal_menu li a {
 ul.horizontal_menu li a:hover {
 	color: #005900;
 	background: radial-gradient(#FFFFFF, #CCE6FF);
-	margin: 0; 
-	padding: 10px 14px 10px 14px; 
+	margin: 0;
+	padding: 10px 14px 10px 14px;
 }
 
 ul.horizontal_menu li a.selected {
@@ -111,13 +111,13 @@ pre {
 
 
 /* Links */
-a { 
+a {
 	color: #202D6B;
     text-decoration: none;
 }
 
 a:hover {
-    color: #800000; 
+    color: #800000;
     text-decoration: underline;
 }
 

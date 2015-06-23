@@ -3,18 +3,54 @@ div.map {
 	height: 100%;
 }
 
-div.route_map {
-	width: calc(100% - 250px);
-	height: 100%;
-	float: right;
+#topMessageBox {
+	width: 200px;
+	height: 30px;
+	position: absolute;
+	left: calc(50% - 100px);
+	top: 110px;
+	text-align: center;
+	padding-top: 6px;
+	box-sizing: border-box;
+	display:none;
+	color: #E5E5E5;
 }
 
-div.info_panel {
+#infoPanel {
 	width: 244px;
-	height: 100%;
-	float:left;
-	border-right: 6px solid #FFC34B;
+	height: calc(100% - 170px);
+	position: absolute;
+	left: 46px;
+	top: 110px;
+	text-align: left;
+	padding-top: 6px;
+	box-sizing: border-box;
+}
+
+#infoPanelTop {
+	text-align: right;
+	padding: 0px 10px 10px 10px;
+}
+
+#infoPanelTop a {
+	color: #FFFFFF;
+}
+
+#infoPanelMiddle {
+	left: 0;
+	right: 0;
+	top: 70;
+	bottom: 0;
+	color: #FFFFFF;
+	position: absolute;
 	overflow: auto;
+}
+
+.box {
+	box-shadow: 2px 2px 0px #949494;
+	background: #444;
+    opacity: 0.9;
+    border-radius: 4px;
 }
 
 span.fa {
@@ -24,18 +60,16 @@ span.fa {
 ol.marker-list {
 	bottom:0;
 	overflow-x:auto;
-	background:#fff;
 	margin:0;
 }
   
 ol.marker-list li {
 	padding:2px;
 	margin:0;
-	/*list-style-type:none;*/
 }
   
 ol.marker-list li:hover {
-	background: #E5E5E5;
+	color: #66B4FF;
 }
 
 #SelectList {
@@ -45,5 +79,6 @@ ol.marker-list li:hover {
 
 div.leaflet-popup-content-wrapper {
 	border-radius: 5px;
-	text-align: center;
+	text-align: left;
 }
+

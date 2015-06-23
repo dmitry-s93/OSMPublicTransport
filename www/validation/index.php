@@ -1,8 +1,6 @@
 <?php
 include_once ('../include/config.php');
 
-$dbconn = pg_connect("host=".HOST." dbname=".NAME_BD." user=".USER." password='".PASSWORD."'") or die(pg_last_error());
-
 $sql_quality= pg_query("
 SELECT
 	regions.id as region_id,
