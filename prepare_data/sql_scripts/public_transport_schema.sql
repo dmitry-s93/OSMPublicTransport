@@ -9,9 +9,6 @@ DROP TABLE IF EXISTS transport_validation;
 DROP TABLE IF EXISTS statistics_by_region;
 DROP TABLE IF EXISTS statistics_summary;
 
-DROP SEQUENCE IF EXISTS statistics_by_region_sequence;
-DROP SEQUENCE IF EXISTS statistics_summary_sequence;
-
 CREATE TABLE IF NOT EXISTS
 regions (
 	id BIGINT NOT NULL,
@@ -70,13 +67,10 @@ transport_validation(
 	no_from_to BIGINT,
 	PRIMARY KEY(region_id));
 
-CREATE SEQUENCE statistics_by_region_sequence;
-
 CREATE TABLE IF NOT EXISTS
 statistics_by_region(
-	id BIGINT NOT NULL DEFAULT nextval('statistics_by_region_sequence'),
-	region_id BIGINT NOT NULL,
 	tstamp timestamp NOT NULL,
+	region_id BIGINT NOT NULL,
 	route_bus BIGINT,
 	route_trolleybus BIGINT,
 	route_share_taxi BIGINT,
@@ -90,13 +84,10 @@ statistics_by_region(
 	stop_position BIGINT,
 	platform BIGINT,
 	station BIGINT,
-	PRIMARY KEY(id));
-	
-CREATE SEQUENCE statistics_summary_sequence;
+	PRIMARY KEY(tstamp, region_id));
 
 CREATE TABLE IF NOT EXISTS
 statistics_summary(
-	id BIGINT NOT NULL DEFAULT nextval('statistics_summary_sequence'),
 	tstamp timestamp NOT NULL,
 	route_bus BIGINT,
 	route_trolleybus BIGINT,
@@ -111,4 +102,4 @@ statistics_summary(
 	stop_position BIGINT,
 	platform BIGINT,
 	station BIGINT,
-	PRIMARY KEY(id));
+	PRIMARY KEY(tstamp));

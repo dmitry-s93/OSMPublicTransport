@@ -11,17 +11,17 @@ $osmosis_bin_path \
 
 $osmosis_bin_path \
 	--read-pbf file="$input_file_path" \
-	--node-key-value keyValueList="highway.bus_stop, public_transport.platform,stop_position, railway.tram_stop" \
+	--node-key-value keyValueList="public_transport.stop_position,public_transport.platform,public_transport.station,highway.bus_stop,amenity.bus_station,railway.stop,railway.tram_stop,railway.halt,railway.station" \
 	--used-way \
 	--write-pbf file="$temp_path/file2.osm.pbf"
 
 $osmosis_bin_path \
 	--read-pbf file="$input_file_path" \
-	--way-key-value keyValueList="public_transport.platform" \
+	--way-key-value keyValueList="public_transport.platform,public_transport.station,amenity.bus_station,railway.station" \
 	--tag-filter reject-relations \
 	--used-node \
 	--write-pbf file="$temp_path/file3.osm.pbf"
-  
+
 $osmosis_bin_path \
 	--rb file="$temp_path/file1.osm.pbf" \
 	--rb file="$temp_path/file2.osm.pbf" \

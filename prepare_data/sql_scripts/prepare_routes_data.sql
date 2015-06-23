@@ -21,7 +21,7 @@
 				MAX(nodes.tstamp) as tstamp,
 				ST_makeLine(nodes.geom) as geom
 			FROM
-				(SELECT 
+				(SELECT
 					relations.id as route_id,
 					t_nodes.node_pos as node_pos,
 					relation_members.sequence_id as way_pos,
@@ -246,7 +246,7 @@ BEGIN;
 			count(case when routes.tags->'route'='share_taxi' then true else null end) as route_share_taxi,
 			count(case when routes.tags->'route'='tram' then true else null end) as route_tram,
 			count(case when routes.tags->'route'='train' then true else null end) as route_train
-		FROM 
+		FROM
 			regions LEFT JOIN
 			(SELECT DISTINCT
 				transport_routes.id,
@@ -267,7 +267,7 @@ BEGIN;
 			count(case when route_master.tags->'route_master'='share_taxi' then true else null end) as route_master_share_taxi,
 			count(case when route_master.tags->'route_master'='tram' then true else null end) as route_master_tram,
 			count(case when route_master.tags->'route_master'='train' then true else null end) as route_master_train
-		FROM 
+		FROM
 			regions LEFT JOIN
 			(SELECT DISTINCT
 				transport_route_master.id,
@@ -288,11 +288,11 @@ BEGIN;
 		GROUP BY regions.id) as route_master,
 
 		(SELECT DISTINCT
-			regions.id as region_id,	
+			regions.id as region_id,
 			count(case when (stops.tags->'public_transport'='stop_position' or stops.tags->'railway'='tram_stop' or stops.tags->'railway'='stop') then true else null end) as stop_position,
 			count(case when (stops.tags->'public_transport'='platform' or stops.tags->'highway'='bus_stop') then true else null end) as platform,
 			count(case when (stops.tags->'public_transport'='station' or stops.tags->'railway'='station' or stops.tags->'railway'='halt') then true else null end) as station
-		FROM 
+		FROM
 			regions LEFT JOIN
 			(SELECT DISTINCT
 				transport_stops.id,
@@ -352,7 +352,7 @@ BEGIN;
 			count(case when transport_routes.tags->'route'='share_taxi' then true else null end) as route_share_taxi,
 			count(case when transport_routes.tags->'route'='tram' then true else null end) as route_tram,
 			count(case when transport_routes.tags->'route'='train' then true else null end) as route_train
-		FROM 
+		FROM
 			transport_routes) as routes,
 		(SELECT DISTINCT
 			count(case when transport_route_master.tags->'route_master'='bus' then true else null end) as route_master_bus,
@@ -360,13 +360,13 @@ BEGIN;
 			count(case when transport_route_master.tags->'route_master'='share_taxi' then true else null end) as route_master_share_taxi,
 			count(case when transport_route_master.tags->'route_master'='tram' then true else null end) as route_master_tram,
 			count(case when transport_route_master.tags->'route_master'='train' then true else null end) as route_master_train
-		FROM 
+		FROM
 			transport_route_master) as route_master,
- 		(SELECT DISTINCT	
+ 		(SELECT DISTINCT
 			count(case when (transport_stops.tags->'public_transport'='stop_position' or transport_stops.tags->'railway'='tram_stop' or transport_stops.tags->'railway'='stop') then true else null end) as stop_position,
 			count(case when (transport_stops.tags->'public_transport'='platform' or transport_stops.tags->'highway'='bus_stop') then true else null end) as platform,
 			count(case when (transport_stops.tags->'public_transport'='station' or transport_stops.tags->'railway'='station' or transport_stops.tags->'railway'='halt') then true else null end) as station
-		FROM 
+		FROM
 			transport_stops) as stops,
 		(SELECT MAX(tstamp) as tstamp
 		FROM
