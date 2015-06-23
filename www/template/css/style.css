@@ -1,7 +1,7 @@
 body{
-    background-color: f0f0f0;
-    display: initial;
-   }
+	background-color: f0f0f0;
+	margin:0px;
+}
 
 div#block {
 	width:100%;
@@ -113,23 +113,23 @@ pre {
 /* Links */
 a {
 	color: #202D6B;
-    text-decoration: none;
+	text-decoration: none;
 }
 
 a:hover {
-    color: #800000;
-    text-decoration: underline;
+	color: #800000;
+	text-decoration: underline;
 }
 
 
 /* Tables */
 table {
-    width: 95%;
-    margin-left: auto;
-    margin-right: auto;
-    border-collapse: collapse;
-    box-shadow: 8px 8px 6px rgba(122,122,122,0.5);
-    background: #FFFDF0;
+	width: 95%;
+	margin-left: auto;
+	margin-right: auto;
+	border-collapse: collapse;
+	box-shadow: 8px 8px 6px rgba(122,122,122,0.5);
+	background: #FFFDF0;
    }
 th {
 	text-align:center;
