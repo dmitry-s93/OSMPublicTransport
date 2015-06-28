@@ -3,28 +3,33 @@ div.map {
 	height: 100%;
 }
 
-#topMessageBox {
-	width: 200px;
-	height: 30px;
-	position: absolute;
-	left: calc(50% - 100px);
-	top: 110px;
-	text-align: center;
-	padding-top: 6px;
-	box-sizing: border-box;
-	display:none;
-	color: #E5E5E5;
+div.data-filter {
+	/*display: flex;*/
+	left: 36;
+	position: fixed;
 }
 
-#infoPanel {
-	width: 244px;
-	height: calc(100% - 170px);
-	position: absolute;
-	left: 46px;
+div.top-message {
+	position: fixed;
+	left: calc(50% - 100px);
 	top: 110px;
+	padding-right: 15px;
+	padding-left: 15px;
+	text-align: center;
+	font-size: 14px;
+	display:none;
+	opacity: 0.6;
+}
+
+#route-panel {
+	width: 244px;
+	height: calc(100% - 180px);
+	position: fixed;
+	left: 36px;
 	text-align: left;
 	padding-top: 6px;
 	box-sizing: border-box;
+	display: none;
 }
 
 #infoPanelTop {
@@ -32,25 +37,14 @@ div.map {
 	padding: 0px 10px 10px 10px;
 }
 
-#infoPanelTop a {
-	color: #FFFFFF;
-}
-
-#infoPanelMiddle {
-	left: 0;
-	right: 0;
-	top: 70;
-	bottom: 0;
-	color: #FFFFFF;
-	position: absolute;
-	overflow: auto;
-}
-
-.box {
-	box-shadow: 2px 2px 0px #949494;
-	background: #444;
-    opacity: 0.9;
-    border-radius: 4px;
+.box, .top-message, .data-filter, .route-panel {
+	box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+	background: #FFF;
+	color: #000;
+	padding: 6px;
+	/*background: #444;
+	color: #FFF;*/
+    border-radius: 5px;
 }
 
 span.fa {
@@ -58,6 +52,7 @@ span.fa {
 }
 
 ol.marker-list {
+	height: calc(100% - 70px);
 	bottom:0;
 	overflow-x:auto;
 	margin:0;
@@ -69,6 +64,7 @@ ol.marker-list li {
 }
   
 ol.marker-list li:hover {
+	cursor: hand;
 	color: #66B4FF;
 }
 
@@ -82,3 +78,8 @@ div.leaflet-popup-content-wrapper {
 	text-align: left;
 }
 
+#popup-title {
+	font-size: 16px;
+	font-weight: bolder;
+	color: #008C00;
+}
