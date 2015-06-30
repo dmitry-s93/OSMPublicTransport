@@ -44,7 +44,7 @@ pg_free_result($sql_regions);
 // Закрытие соединения
 pg_close($dbconn);
 
-$page_title='Маршруты общественного транспорта по регионам';
+$page_title='Маршруты общественного транспорта OpenStreetMap по регионам';
 $page = 'routes';
 include(TEMPLATE_PATH);
 ?>

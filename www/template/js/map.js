@@ -20,7 +20,7 @@ function parseURL() {
 	if ('url_layer' in param) {
 		MapBaseLayer = param['url_layer'];
 	} else {
-		MapBaseLayer = 'K';
+		MapBaseLayer = 'S';
 	}
 	if ('url_route' in param) {
 		RouteID = param['url_route'];
@@ -40,7 +40,7 @@ function setMapURL() {
 	document.cookie = "OSMPublicTransport="+MapUrl;
 }
 
-function onsetBaselayer() {
+function onBaselayerChange() {
 	switch (true) {
 		case map.hasLayer(MapSurferLayer): MapBaseLayer = 'S'; break;
 		case map.hasLayer(SputnikRuLayer): MapBaseLayer = 'K'; break;
@@ -172,9 +172,9 @@ function getRouteData(rID) {
 					document.getElementById('platform-list').style.display = 'none';
 					document.getElementById('stop-position-list').style.display = 'block';
 				}
+				RouteID = rID;
 				$('#route-panel').fadeIn();
 				map.fitBounds(RouteLayer.getBounds());
-				RouteID = rID;
 				setMapURL();
 			}
 		});
@@ -293,7 +293,6 @@ function getData() {
 			$('#top-message-box').fadeOut();
 		} else {
 			document.getElementById("top-message-box").innerHTML = "Приблизьте карту";
-
 			$('#top-message-box').fadeIn();
 		}
 	}
@@ -535,7 +534,7 @@ map.addControl(new routePanel());
 
 var topMessage = L.Control.extend({
 	options: {
-		position: 'bottomright'
+		position: 'topleft'
 	},
 	onAdd: function (map) {
 		var container = L.DomUtil.create('div', 'top-message');
@@ -551,7 +550,7 @@ getData();
 
 getRouteData(RouteID);
 
-map.on('setBaselayer', onsetBaselayer);
+map.on('baselayerchange', onBaselayerChange);
 map.on('moveend', setMapURL);
 map.on('dragend', getData);
 map.on('zoomend', getData);

@@ -54,7 +54,7 @@ $output=$output."</tbody></table><br>";
 pg_free_result($sql_quality);
 pg_close($dbconn);		
 
-$page_title="Качество маршрутов общественного транспорта";
+$page_title="Качество маршрутов общественного транспорта OpenStreetMap";
 $page = 'validation';
 include(TEMPLATE_PATH);
 ?>

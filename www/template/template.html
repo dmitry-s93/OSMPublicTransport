@@ -2,7 +2,7 @@
 	<head>
 		<meta name="viewport" content="width=device-width">
 		<title>
-			<?=$page_title?> 
+			<?=$page_title?>
 		</title>
 		<?php if (file_exists ("template/css/style.css")): ?>
 			<link rel="stylesheet" href="template/css/style.css" />
@@ -10,23 +10,20 @@
 		<?php if (file_exists ("../template/css/style.css")): ?>
 			<link rel="stylesheet" href="../template/css/style.css" />
 		<?php endif; ?>
-		
+
 		<?php if (file_exists ("template/css/leaflet.css")): ?>
 			<link rel="stylesheet" href="template/css/leaflet.css" />
 		<?php endif; ?>
-		
+
 		<?php if (file_exists ("template/css/font-awesome.min.css")): ?>
 			<link rel="stylesheet" href="template/css/font-awesome.min.css" />
 		<?php endif; ?>
 		<?php if (file_exists ("../template/css/font-awesome.min.css")): ?>
 			<link rel="stylesheet" href="../template/css/font-awesome.min.css" />
-		<?php endif; ?>		
+		<?php endif; ?>
 	</head>
 	<body>
 		<div id="block">
-			<div class="header">
-				<p>Маршруты автобусов, троллейбусов, маршруток, трамваев и поездов</p>
-			</div>
 			<div class="menu">
 				<ul class="horizontal_menu">
 					<?php if ($page == 'main'): ?>
@@ -34,25 +31,25 @@
 					<?php else: ?>
 						<li><a href="/"><i class="fa fa-globe"></i>&nbsp;Карта</a></li>
 					<?php endif; ?>
-					
+
 					<?php if ($page == 'routes'): ?>
 						<li><a href="/routes" class="selected"><i class="fa fa-bus"></i>&nbsp;Маршруты</a></li>
 					<?php else: ?>
 						<li><a href="/routes"><i class="fa fa-bus"></i>&nbsp;Маршруты</a></li>
 					<?php endif; ?>
-					
+
 					<?php if ($page == 'validation'): ?>
 						<li><a href="/validation" class="selected"><i class="fa fa-check-square-o">&nbsp;</i>Качество</a></li>
 					<?php else: ?>
 						<li><a href="/validation"><i class="fa fa-check-square-o">&nbsp;</i>Качество</a></li>
 					<?php endif; ?>
-					
+
 					<?php if ($page == 'statistics'): ?>
 						<li><a href="/statistics" class="selected"><i class="fa fa-bar-chart"></i>&nbsp;Статистика</a></li>
 					<?php else: ?>
 						<li><a href="/statistics"><i class="fa fa-bar-chart">&nbsp;</i>Статистика</a></li>
 					<?php endif; ?>
-					
+
 					<?php if ($page == 'about'): ?>
 						<li><a href="/about" class="selected"><i class="fa fa-info-circle"></i>&nbsp;О сайте</a></li>
 					<?php else: ?>

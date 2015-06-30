@@ -91,7 +91,7 @@ if ($city_town_count+$village_count>0) {
 
 pg_close($dbconn);
 
-$page_title=$region_name.' - маршруты общественного транспорта';
+$page_title=$region_name.' - маршруты общественного транспорта OpenStreetMap';
 $page = 'routes';
 include(TEMPLATE_PATH);
 ?>

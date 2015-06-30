@@ -16,7 +16,7 @@ SELECT
 	id,
 	name
 FROM places
-WHERE 
+WHERE
 	id=".$place_id
 ) or die(mysql_error());
 
@@ -47,7 +47,7 @@ if ($place_id !== "null") {
 	$place_name=$row['name'];
 } else
 {
-	$place_name="вне населенных пунктов";	
+	$place_name="вне населенных пунктов";
 }
 
 $output = "<h2 align=center>Список маршрутов (".$place_name.")</h2>";
@@ -77,7 +77,7 @@ while ($row = pg_fetch_assoc($sql_routes)){
 		$output.="<td class='warning'>-</td>";
 	} else {
 		$output.="<td>".$row['ref']."</td>";
-	}	
+	}
 	if ($row['name']=="") {
 		$output.="<td class='warning'>-</td>";
 	} else {
@@ -92,7 +92,7 @@ while ($row = pg_fetch_assoc($sql_routes)){
 		$output.="<td class='warning'>-</td>";
 	} else {
 		$output.="<td>".$row['to']."</td>";
-	}	
+	}
 	if ($row['operator']=="") {
 		$output.="<td>-</td>";
 	} else {
@@ -102,14 +102,14 @@ while ($row = pg_fetch_assoc($sql_routes)){
 		$output.="<td>-</td>";
 	} else {
 		$output.="<td>".$row['network']."</td>";
-	}	
+	}
 	$output.="<td>".round($row['length']/1000,3)." км.</td>
 	</tr>";
-}	
+}
 
 $output.="</tbody></table><br>";
 
-pg_close($dbconn);		
+pg_close($dbconn);
 
 $page = 'validation';
 include(TEMPLATE_PATH);

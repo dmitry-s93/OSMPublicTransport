@@ -12,7 +12,7 @@ div.data-filter {
 div.top-message {
 	position: fixed;
 	left: calc(50% - 100px);
-	top: 110px;
+	top: 60px;
 	padding-right: 15px;
 	padding-left: 15px;
 	text-align: center;
@@ -23,7 +23,7 @@ div.top-message {
 
 #route-panel {
 	width: 244px;
-	height: calc(100% - 180px);
+	height: calc(100% - 130px);
 	position: fixed;
 	left: 36px;
 	text-align: left;
@@ -57,15 +57,15 @@ ol.marker-list {
 	overflow-x:auto;
 	margin:0;
 }
-  
+
 ol.marker-list li {
 	padding:2px;
 	margin:0;
 }
-  
+
 ol.marker-list li:hover {
 	cursor: hand;
-	color: #66B4FF;
+	color: #0055FF;
 }
 
 #SelectList {

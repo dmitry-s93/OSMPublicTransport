@@ -66,7 +66,7 @@ pg_free_result($sql_transport);
 
 pg_close($dbconn);
 
-$page_title=$place_name.' - маршруты общественного транспорта';
+$page_title=$place_name.' - маршруты общественного транспорта OpenStreetMap';
 $page = 'routes';
 include(TEMPLATE_PATH);
 ?>

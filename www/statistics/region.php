@@ -196,7 +196,7 @@ $output.="</tbody></table><br>";
 
 pg_close($dbconn);
 
-$page_title=$region_name." - статистика маршрутов общественного транспорта";
+$page_title=$region_name." - статистика маршрутов общественного транспорта OpenStreetMap";
 $page = 'statistics';
 include(TEMPLATE_PATH);
 ?>

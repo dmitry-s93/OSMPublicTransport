@@ -20,7 +20,7 @@ $output="
 
 $output.="<script src='template/js/map.js'></script>";
 
-$page_title="Карта маршрутов общественного транспорта";
+$page_title="Карта маршрутов общественного транспорта OpenStreetMap";
 $page = 'main';
 include("template/template.html");
 

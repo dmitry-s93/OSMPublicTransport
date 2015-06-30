@@ -117,7 +117,7 @@ $output.="</tbody></table><br>";
 
 pg_close($dbconn);
 
-$page_title='Статистика маршрутов общественного транспорта';
+$page_title='Статистика маршрутов общественного транспорта OpenStreetMap';
 $page = 'statistics';
 include(TEMPLATE_PATH);
 ?>
