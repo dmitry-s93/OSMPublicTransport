@@ -1,4 +1,7 @@
 User-Agent: *
-
+Disallow: /ajax/
 Disallow: /include/
 Disallow: /template/
+Disallow: /validation/region
+Disallow: /validation/routes
+Disallow: /validation/routes_by_place
