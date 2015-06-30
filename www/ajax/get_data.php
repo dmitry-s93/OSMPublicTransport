@@ -5,7 +5,7 @@ $point1 = $_POST['point1'];
 $point2 = $_POST['point2'];
 
 if ($_POST['stations'] == 'true') {
-	$TagsArr[] = "tags->'public_transport'='station' or tags->'amenity'='bus_station'";
+	$TagsArr[] = "tags->'public_transport'='station' or tags->'amenity'='bus_station' or tags->'railway'='station' or tags->'railway'='halt'";
 }
 if ($_POST['platforms'] == 'true') {
 	$TagsArr[] = "tags->'public_transport'='platform' or tags->'highway'='bus_stop'";
@@ -28,7 +28,7 @@ $sql_query=pg_query("
 		(SELECT
 			id,
 			CASE
-				WHEN (tags->'public_transport'='station' or tags->'amenity'='bus_station') THEN 'station'
+				WHEN (tags->'public_transport'='station' or tags->'amenity'='bus_station' or tags->'railway'='station' or tags->'railway'='halt') THEN 'station'
 				WHEN (tags->'public_transport'='platform' or tags->'highway'='bus_stop') THEN 'platform'
 				WHEN (tags->'public_transport'='stop_position' or tags->'tram'='stop') THEN 'stop'
 				ELSE 'unknown'
