@@ -31,13 +31,14 @@ function parseURL() {
 
 function setMapURL() {
 	if (RouteID !== '') {
-		urlRouteID = '&route='+RouteID;
+		var urlRouteID = '&route='+RouteID;
 	} else {
-		urlRouteID = '';
+		var urlRouteID = '';
 	}
 	MapUrl= '#map='+map.getZoom()+'/'+map.getCenter().lat.toFixed(4)+'/'+map.getCenter().lng.toFixed(4)+'&layer='+MapBaseLayer+urlRouteID;
 	location.replace(MapUrl);
-	document.cookie = "OSMPublicTransport="+MapUrl;
+	var date = new Date(new Date().getTime() + 3600 * 1000 * 24 * 365);
+	document.cookie = "OSMPublicTransport="+MapUrl+"; path=/; expires=" + date.toUTCString() + ";";
 }
 
 function onBaselayerChange() {
