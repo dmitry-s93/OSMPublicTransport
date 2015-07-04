@@ -11,7 +11,7 @@ if ($_POST['platforms'] == 'true') {
 	$TagsArr[] = "tags->'public_transport'='platform' or tags->'highway'='bus_stop'";
 }
 if ($_POST['stops'] == 'true') {
-	$TagsArr[] = "tags->'public_transport'='stop_position' or tags->'tram'='stop'";
+	$TagsArr[] = "tags->'public_transport'='stop_position' or tags->'railway'='stop' or tags->'railway'='tram_stop'";
 }
 
 $condition = "";
@@ -30,7 +30,7 @@ $sql_query=pg_query("
 			CASE
 				WHEN (tags->'public_transport'='station' or tags->'amenity'='bus_station' or tags->'railway'='station' or tags->'railway'='halt') THEN 'station'
 				WHEN (tags->'public_transport'='platform' or tags->'highway'='bus_stop') THEN 'platform'
-				WHEN (tags->'public_transport'='stop_position' or tags->'tram'='stop') THEN 'stop'
+				WHEN (tags->'public_transport'='stop_position' or tags->'railway'='stop' or tags->'railway'='tram_stop') THEN 'stop'
 				ELSE 'unknown'
 			END as type,
 			tags->'name' as name,
