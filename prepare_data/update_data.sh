@@ -23,5 +23,10 @@ echo "#############################"
 psql -h $db_host -d $db_name -U $db_user -f "sql_scripts/prepare_routes_data.sql"
 
 echo "#############################"
+echo "#        Очистка БД         #"
+echo "#############################"
+psql -h $db_host -d $db_name -U $db_user -f "sql_scripts/clean_db.sql"
+
+echo "#############################"
 echo "#  Скрипт завершил работу   #"
 echo "#############################"
