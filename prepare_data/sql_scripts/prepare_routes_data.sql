@@ -289,9 +289,18 @@ BEGIN;
 
 		(SELECT DISTINCT
 			regions.id as region_id,
-			count(case when (stops.tags->'public_transport'='stop_position' or stops.tags->'railway'='tram_stop' or stops.tags->'railway'='stop') then true else null end) as stop_position,
-			count(case when (stops.tags->'public_transport'='platform' or stops.tags->'highway'='bus_stop') then true else null end) as platform,
-			count(case when (stops.tags->'public_transport'='station' or stops.tags->'railway'='station' or stops.tags->'railway'='halt') then true else null end) as station
+			count(case when (
+				stops.tags->'public_transport'='stop_position' or
+				stops.tags->'railway'='tram_stop' or
+				stops.tags->'railway'='stop') then true else null end) as stop_position,
+			count(case when (
+				stops.tags->'public_transport'='platform' or
+				stops.tags->'highway'='bus_stop') then true else null end) as platform,
+			count(case when (
+				stops.tags->'public_transport'='station' or
+				stops.tags->'amenity'='bus_station' or
+				stops.tags->'railway'='station' or
+				stops.tags->'railway'='halt') then true else null end) as station
 		FROM
 			regions LEFT JOIN
 			(SELECT DISTINCT
@@ -363,9 +372,18 @@ BEGIN;
 		FROM
 			transport_route_master) as route_master,
  		(SELECT DISTINCT
-			count(case when (transport_stops.tags->'public_transport'='stop_position' or transport_stops.tags->'railway'='tram_stop' or transport_stops.tags->'railway'='stop') then true else null end) as stop_position,
-			count(case when (transport_stops.tags->'public_transport'='platform' or transport_stops.tags->'highway'='bus_stop') then true else null end) as platform,
-			count(case when (transport_stops.tags->'public_transport'='station' or transport_stops.tags->'railway'='station' or transport_stops.tags->'railway'='halt') then true else null end) as station
+			count(case when (
+				transport_stops.tags->'public_transport'='stop_position' or
+				transport_stops.tags->'railway'='tram_stop' or
+				transport_stops.tags->'railway'='stop') then true else null end) as stop_position,
+			count(case when (
+				transport_stops.tags->'public_transport'='platform' or
+				transport_stops.tags->'highway'='bus_stop') then true else null end) as platform,
+			count(case when (
+				transport_stops.tags->'public_transport'='station' or
+				transport_stops.tags->'amenity'='bus_station' or
+				transport_stops.tags->'railway'='station' or
+				transport_stops.tags->'railway'='halt') then true else null end) as station
 		FROM
 			transport_stops) as stops,
 		(SELECT MAX(tstamp) as tstamp
