@@ -27,33 +27,33 @@
 			<div class="menu">
 				<ul class="horizontal_menu">
 					<?php if ($page == 'main'): ?>
-						<li><a href="/" class="selected"><i class="fa fa-globe">&nbsp;</i>Карта</a></li>
+						<li class="menu_item_left"><a href="/" class="selected"><i class="fa fa-globe">&nbsp;</i>Карта</a></li>
 					<?php else: ?>
-						<li><a href="/"><i class="fa fa-globe"></i>&nbsp;Карта</a></li>
+						<li class="menu_item_left"><a href="/"><i class="fa fa-globe"></i>&nbsp;Карта</a></li>
 					<?php endif; ?>
 
 					<?php if ($page == 'routes'): ?>
-						<li><a href="/routes" class="selected"><i class="fa fa-bus"></i>&nbsp;Маршруты</a></li>
+						<li class="menu_item_center"><a href="/routes" class="selected"><i class="fa fa-bus"></i>&nbsp;Маршруты</a></li>
 					<?php else: ?>
-						<li><a href="/routes"><i class="fa fa-bus"></i>&nbsp;Маршруты</a></li>
+						<li class="menu_item_center"><a href="/routes"><i class="fa fa-bus"></i>&nbsp;Маршруты</a></li>
 					<?php endif; ?>
 
 					<?php if ($page == 'validation'): ?>
-						<li><a href="/validation" class="selected"><i class="fa fa-check-square-o">&nbsp;</i>Качество</a></li>
+						<li class="menu_item_center"><a href="/validation" class="selected"><i class="fa fa-check-square-o">&nbsp;</i>Качество</a></li>
 					<?php else: ?>
-						<li><a href="/validation"><i class="fa fa-check-square-o">&nbsp;</i>Качество</a></li>
+						<li class="menu_item_center"><a href="/validation"><i class="fa fa-check-square-o">&nbsp;</i>Качество</a></li>
 					<?php endif; ?>
 
 					<?php if ($page == 'statistics'): ?>
-						<li><a href="/statistics" class="selected"><i class="fa fa-bar-chart"></i>&nbsp;Статистика</a></li>
+						<li class="menu_item_center"><a href="/statistics" class="selected"><i class="fa fa-bar-chart"></i>&nbsp;Статистика</a></li>
 					<?php else: ?>
-						<li><a href="/statistics"><i class="fa fa-bar-chart">&nbsp;</i>Статистика</a></li>
+						<li class="menu_item_center"><a href="/statistics"><i class="fa fa-bar-chart">&nbsp;</i>Статистика</a></li>
 					<?php endif; ?>
 
 					<?php if ($page == 'about'): ?>
-						<li><a href="/about" class="selected"><i class="fa fa-info-circle"></i>&nbsp;О сайте</a></li>
+						<li class="menu_item_right"><a href="/about" class="selected"><i class="fa fa-info-circle"></i>&nbsp;О сайте</a></li>
 					<?php else: ?>
-						<li><a href="/about"><i class="fa fa-info-circle"></i>&nbsp;О сайте</a></li>
+						<li class="menu_item_right"><a href="/about"><i class="fa fa-info-circle"></i>&nbsp;О сайте</a></li>
 					<?php endif; ?>
 				</ul>
 			</div>

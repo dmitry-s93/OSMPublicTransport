@@ -4,7 +4,6 @@ div.map {
 }
 
 div.data-filter {
-	/*display: flex;*/
 	left: 36;
 	position: fixed;
 }
@@ -44,7 +43,7 @@ div.top-message {
 	padding: 6px;
 	/*background: #444;
 	color: #FFF;*/
-    border-radius: 5px;
+    border-radius: 2px;
 }
 
 span.fa {

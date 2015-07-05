@@ -6,21 +6,20 @@ body{
 div#block {
 	width:100%;
 	height:100%;
-	min-width:700px;
+	min-width:600px;
 	margin:0 auto;
 }
 
 div.menu {
 	width:100%;
-	height:52px;
-	border-top: 2px solid #114477;
+	height:50px;
 	border-bottom: 6px solid #FFC34B;
 }
 
 div.body {
 	width:100%;
-	height:calc(100% - 60px);
-	min-height:500px;
+	height:calc(100% - 56px);
+	min-height:400px;
 	padding-left:0px;
 	display:inline-block;
 	background: #FFFFFF;
@@ -32,13 +31,15 @@ ul.horizontal_menu {
 	margin-bottom:0px;
 	margin-top:0px;
 	list-style: none;
-	padding: 16px 14px 18px 14px;
+	font-size: 0;
+	padding: 16px 14px 16px 14px;
 	background: #489CF3
 }
 
 ul.horizontal_menu li {
 	display: inline;
-	padding: 0px 2px;
+	font-size: 12pt;
+	padding: 0px;
 }
 
 ul.horizontal_menu li a {
@@ -47,23 +48,29 @@ ul.horizontal_menu li a {
 	background: #CCE6FF;
 	margin: 0;
 	padding: 10px 14px 10px 14px;
-	border-radius: 4px 4px;
-	box-shadow: 4px 4px 3px rgba(0,0,0,0.6);
+	border-top: 1px solid #4D4D4D;
+	border-bottom: 1px solid #4D4D4D;
+	border-right: 1px solid #4D4D4D;
 }
 
 ul.horizontal_menu li a:hover {
 	color: #005900;
 	background: radial-gradient(#FFFFFF, #CCE6FF);
-	margin: 0;
-	padding: 10px 14px 10px 14px;
 }
 
 ul.horizontal_menu li a.selected {
 	color: #FFFFFF;
 	background: #287BCC;
-	box-shadow: 3px 3px 2px rgba(0,0,0,0.6);
 }
 
+li.menu_item_left a {
+	border-left: 1px solid #4D4D4D;
+	border-radius: 6px 0px 0px 6px;
+}
+
+li.menu_item_right a {
+	border-radius: 0px 6px 6px 0px;
+}
 
 /* Content */
 h3 {
