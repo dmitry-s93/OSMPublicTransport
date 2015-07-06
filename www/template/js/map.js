@@ -64,31 +64,47 @@ function setBaselayer() {
 	setMapURL();
 }
 
+function setLayersOrder() {
+	if (map.hasLayer(StopLayer)) {
+		StopLayer.bringToFront();
+	}
+	if (map.hasLayer(PlatformLayer)) {
+		PlatformLayer.bringToFront();
+	}
+	if (map.hasLayer(StationLayer)) {
+		StationLayer.bringToFront();
+	}
+}
+
 function clearRouteLayer() {
 	RouteLayer.clearLayers();
-	RoutePlatformLayer.clearLayers();
-	RouteStopLayer.clearLayers();
+	StationLayer.clearLayers();
+	PlatformLayer.clearLayers();
+	StopLayer.clearLayers();
 
 	RouteID = '';
 
-	$('#route-panel').fadeOut();
+	$('#content_panel').hide();
+	map.invalidateSize();
 	getData();
 	setMapURL();
 }
 
 var RouteLayer = new L.FeatureGroup();
-var RouteStopLayer = new L.FeatureGroup();
-var RoutePlatformLayer = new L.FeatureGroup();
+var StationLayer = new L.FeatureGroup();
+var PlatformLayer = new L.FeatureGroup();
+var StopLayer = new L.FeatureGroup();
 
 function getRouteData(rID) {
 	if (rID !== '') {
-		DataLayer.clearLayers();
+		RouteID = rID;
 		RouteLayer.clearLayers();
-		RoutePlatformLayer.clearLayers();
-		RouteStopLayer.clearLayers();
+		StationLayer.clearLayers();
+		PlatformLayer.clearLayers();
+		StopLayer.clearLayers();
 		$("#platform-list").empty();
 		$("#stop-position-list").empty();
-		$('#data-filter-box').fadeOut();
+		createRouteInfo();
 		$.ajax({
 			type: "POST",
 			url: "/ajax/get_route_data.php",
@@ -109,7 +125,6 @@ function getRouteData(rID) {
 					}).addTo(RouteLayer);
 					delete geojsonRoute;
 				}
-
 				if (typeof geojsonStops !== "undefined") {
 					L.geoJson(geojsonStops, {
 						style: {
@@ -133,10 +148,9 @@ function getRouteData(rID) {
 							});
 							createListElements(feature, layer);
 						}
-					}).addTo(RouteStopLayer);
+					}).addTo(StopLayer);
 					delete geojsonStops;
 				}
-
 				if (typeof geojsonPlatforms !== "undefined") {
 					L.geoJson(geojsonPlatforms, {
 						style: {
@@ -160,21 +174,22 @@ function getRouteData(rID) {
 							});
 							createListElements(feature, layer);
 						}
-					}).addTo(RoutePlatformLayer);
+					}).addTo(PlatformLayer);
 					delete geojsonPlatforms;
 				}
 
 				map.addLayer(RouteLayer);
-				map.addLayer(RouteStopLayer);
-				map.addLayer(RoutePlatformLayer);
+				map.addLayer(StopLayer);
+				map.addLayer(PlatformLayer);
+				setLayersOrder();
 
 				if (document.getElementById('stop-position-list').childNodes.length > document.getElementById('platform-list').childNodes.length) {
 					document.getElementById("SelectList").options[1].selected=true;
 					document.getElementById('platform-list').style.display = 'none';
 					document.getElementById('stop-position-list').style.display = 'block';
 				}
-				RouteID = rID;
-				$('#route-panel').fadeIn();
+				$('#content_panel').show();
+				map.invalidateSize();
 				map.fitBounds(RouteLayer.getBounds());
 				setMapURL();
 			}
@@ -182,27 +197,26 @@ function getRouteData(rID) {
 	}
 }
 
-var DataLayer = new L.FeatureGroup();
-
 function getData() {
 	if (RouteID == '') {
-		DataLayer.clearLayers();
-		$('#data-filter-box').fadeIn();
+		StationLayer.clearLayers();
+		PlatformLayer.clearLayers();
+		StopLayer.clearLayers();
 		if (map.getZoom() > 14) {
 			document.getElementById("top-message-box").innerHTML = "Загрузка";
 			$('#top-message-box').fadeIn();
 
-			if (document.getElementById("station-checkbox").checked) {
+			if (map.hasLayer(StationLayer)) {
 				getStations = true;
 			} else {
 				getStations = false;
 			}
-			if (document.getElementById("platform-checkbox").checked) {
+			if (map.hasLayer(PlatformLayer)) {
 				getPlatforms = true;
 			} else {
 				getPlatforms = false;
 			}
-			if (document.getElementById("stop-checkbox").checked) {
+			if (map.hasLayer(StopLayer)) {
 				getStops = true;
 			} else {
 				getStops = false;
@@ -215,80 +229,88 @@ function getData() {
 				data: {
 					point1: (bbox._southWest.lng)+","+(bbox._southWest.lat),
 					point2: (bbox._northEast.lng)+","+(bbox._northEast.lat),
-					stations: getStations,
-					platforms: getPlatforms,
-					stops: getStops
+					station: getStations,
+					platform: getPlatforms,
+					stop_pos: getStops
 				},
 				dataType: "script",
 				async: true,
 				success: function(data){
-					if (typeof geojsonResult !== "undefined") {
-						L.geoJson(geojsonResult, {
-							style: function (feature) {
-								if (feature.properties.type == 'station') {
-									return {
-										"color": "#008000",
-										"weight": 3,
-										"opacity": 1
-									}
-								}
-								if (feature.properties.type == 'platform') {
-									return {
-										"color": "#1E90FF",
-										"weight": 2,
-										"opacity": 1
-									}
-								}
-								if (feature.properties.type == 'stop') {
-									return {
-										"color": "#FFFFFF",
-										"weight": 1,
-										"opacity": 1
-									}
-								}
+					if (typeof geojson_stop_positions !== "undefined") {
+						L.geoJson(geojson_stop_positions, {
+							style: {
+								"color": "#FFFFFF",
+								"weight": 1,
+								"opacity": 1
 							},
 							pointToLayer: function (feature, latlng) {
-								if (feature.properties.type == 'station') {
-									return L.circleMarker(latlng, {
-										radius: 8,
-										fillColor: "#FFFFFF",
-										color: "#000",
-										weight: 1,
-										opacity: 1,
-										fillOpacity: 1
-									});
-								}
-								if (feature.properties.type == 'platform') {
-									return L.circleMarker(latlng, {
-										radius: 6,
-										fillColor: "#FFFFFF",
-										color: "#000",
-										weight: 1,
-										opacity: 1,
-										fillOpacity: 1
-									});
-								}
-								if (feature.properties.type == 'stop') {
-									return L.circleMarker(latlng, {
-										radius: 6,
-										fillColor: "#1E90FF",
-										color: "#000",
-										weight: 2,
-										opacity: 1,
-										fillOpacity: 1
-									});
-								}
+								return L.circleMarker(latlng, {
+									radius: 6,
+									fillColor: "#1E90FF",
+									color: "#000",
+									weight: 2,
+									opacity: 1,
+									fillOpacity: 1
+								});
 							},
 							onEachFeature: function (feature, layer) {
 								layer.on('click', function() {
 									loadFeaturePopupData(feature, layer);
 								});
 							}
-						}).addTo(DataLayer);
-						map.addLayer(DataLayer);
-						delete geojsonResult;
+						}).addTo(StopLayer);
+						delete geojson_stop_positions;
 					}
-
+					if (typeof geojson_platforms !== "undefined") {
+						L.geoJson(geojson_platforms, {
+							style: {
+								"color": "#1E90FF",
+								"weight": 2,
+								"opacity": 1
+							},
+							pointToLayer: function (feature, latlng) {
+								return L.circleMarker(latlng, {
+									radius: 6,
+									fillColor: "#FFFFFF",
+									color: "#000",
+									weight: 1,
+									opacity: 1,
+									fillOpacity: 1
+								});
+							},
+							onEachFeature: function (feature, layer) {
+								layer.on('click', function() {
+									loadFeaturePopupData(feature, layer);
+								});
+							}
+						}).addTo(PlatformLayer);
+						delete geojson_platforms;
+					}
+					if (typeof geojson_stations !== "undefined") {
+						L.geoJson(geojson_stations, {
+							style: {
+								"color": "#008000",
+								"weight": 3,
+								"opacity": 1
+							},
+							pointToLayer: function (feature, latlng) {
+								return L.circleMarker(latlng, {
+									radius: 8,
+									fillColor: "#FFFFFF",
+									color: "#000",
+									weight: 1,
+									opacity: 1,
+									fillOpacity: 1
+								});
+							},
+							onEachFeature: function (feature, layer) {
+								layer.on('click', function() {
+									loadFeaturePopupData(feature, layer);
+								});
+							}
+						}).addTo(StationLayer);
+						delete geojson_stations;
+					}
 				}
 			});
 			$('#top-message-box').fadeOut();
@@ -399,16 +421,18 @@ function bindRoutePopup(feature, layer) {
 	}
 }
 
-function SetList() {
-	var list_id = document.getElementById('SelectList').selectedIndex;
-	if (list_id == 0) {
-		document.getElementById('platform-list').style.display = 'block';
-		document.getElementById('stop-position-list').style.display = 'none';
-	}
-	if (list_id == 1) {
-		document.getElementById('platform-list').style.display = 'none';
-		document.getElementById('stop-position-list').style.display = 'block';
-	}
+function createRouteInfo() {
+	var contentPanel = document.getElementById('content_panel');
+	contentPanel.innerHTML =
+		'<div align="center"><a href="#" onclick="clearRouteLayer(); return false;">Закрыть маршрут</a></div> \n\
+		<form action="" align="center"> \n\
+				<select id="SelectList" onchange="SetList()"> \n\
+					<option value="platform"> Остановки / платформы </option> \n\
+					<option value="stop_position"> Места остановок </option> \n\
+				</select> \n\
+		</form> \n\
+		<ol id="platform-list" class="marker-list"></ol> \n\
+		<ol id="stop-position-list" class="marker-list" style="display: none;"></ol>';
 }
 
 function createListElements(feature, layer) {
@@ -427,6 +451,18 @@ function createListElements(feature, layer) {
 				loadFeaturePopupData(feature, layer);
 			};
 		}
+	}
+}
+
+function SetList() {
+	var list_id = document.getElementById('SelectList').selectedIndex;
+	if (list_id == 0) {
+		document.getElementById('platform-list').style.display = 'block';
+		document.getElementById('stop-position-list').style.display = 'none';
+	}
+	if (list_id == 1) {
+		document.getElementById('platform-list').style.display = 'none';
+		document.getElementById('stop-position-list').style.display = 'block';
 	}
 }
 
@@ -455,7 +491,10 @@ var baseLayers = {
 };
 
 var overlays = {
-	"Общественный транспорт": PTLayer,
+	"Слой маршрутов": PTLayer,
+	"Станции": StationLayer,
+	"Остановки / платформы": PlatformLayer,
+	"Места остановок": StopLayer,
 };
 
 parseURL();
@@ -490,49 +529,6 @@ L.control.locate({
 	}
 }).addTo(map);
 
-var dataFilter = L.Control.extend({
-	options: {
-		position: 'topleft'
-	},
-	onAdd: function (map) {
-		var container = L.DomUtil.create('div', 'data-filter');
-		container.id = 'data-filter-box';
-		container.innerHTML =
-			'<input type="checkbox" id="station-checkbox" onclick="getData()"  checked>Станции<Br>'+
-			'<input type="checkbox" id="platform-checkbox" onclick="getData()" checked>Остановки / платформы<Br>'+
-			'<input type="checkbox" id="stop-checkbox" onclick="getData()">Места остановок<Br>';
-		return container;
-	}
-});
-
-map.addControl(new dataFilter());
-
-var routePanel = L.Control.extend({
-	options: {
-		position: 'topleft'
-	},
-	onAdd: function (map) {
-		var container = L.DomUtil.create('div', 'route-panel');
-		container.id = 'route-panel';
-		container.innerHTML =
-			'<div id="infoPanelTop"> \n\
-			<a href="#" onclick="clearRouteLayer(); return false;"><i class="fa fa-times"></i></a> \n\
-		</div> \n\
-		<form action="" align="center"> \n\
-				<select id="SelectList" onchange="SetList()"> \n\
-					<option value="platform"> Остановки / платформы </option> \n\
-					<option value="stop_position"> Места остановок </option> \n\
-				</select> \n\
-		</form> \n\
-		<ol id="platform-list" class="marker-list"></ol> \n\
-		<ol id="stop-position-list" class="marker-list" style="display: none;"></ol>';
-		return container;
-	}
-});
-
-map.addControl(new routePanel());
-
-
 var topMessage = L.Control.extend({
 	options: {
 		position: 'topleft'
@@ -546,12 +542,19 @@ var topMessage = L.Control.extend({
 
 map.addControl(new topMessage());
 
+map.addLayer(PlatformLayer);
+map.addLayer(StationLayer);
+
 setBaselayer();
 getData();
 
 getRouteData(RouteID);
 
 map.on('baselayerchange', onBaselayerChange);
+map.on('overlayadd', function () {
+	getData();
+	setLayersOrder();
+});
 map.on('moveend', setMapURL);
 map.on('dragend', getData);
 map.on('zoomend', getData);

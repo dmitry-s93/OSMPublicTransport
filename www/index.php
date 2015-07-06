@@ -15,6 +15,7 @@ $output="
 	<script src='template/js/Control.FullScreen.js'></script>
 	<script src='template/js/L.Control.Locate.min.js' ></script>
 
+	<div id='content_panel'></div>
 	<div id='map' class='map'></div>
 	";
 

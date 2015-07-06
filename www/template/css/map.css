@@ -1,11 +1,13 @@
 div.map {
-	width: 100%;
 	height: 100%;
 }
 
-div.data-filter {
-	left: 36;
-	position: fixed;
+#content_panel {
+	float:left;
+	width: 250px;
+	height: 100%;
+	border-right: 6px solid #FFC34B;
+	display: none;
 }
 
 div.top-message {
@@ -20,23 +22,12 @@ div.top-message {
 	opacity: 0.6;
 }
 
-#route-panel {
-	width: 244px;
-	height: calc(100% - 130px);
-	position: fixed;
-	left: 36px;
-	text-align: left;
-	padding-top: 6px;
-	box-sizing: border-box;
-	display: none;
-}
-
 #infoPanelTop {
 	text-align: right;
 	padding: 0px 10px 10px 10px;
 }
 
-.box, .top-message, .data-filter, .route-panel {
+.box, .top-message {
 	box-shadow: 0 3px 14px rgba(0,0,0,0.4);
 	background: #FFF;
 	color: #000;
