@@ -120,8 +120,8 @@ function getRouteData(rID) {
 							"weight": 6,
 							"opacity": 0.6
 						},
-						onEachFeature: function (feature) {
-							bindRoutePopup;
+						onEachFeature: function (feature, layer) {
+							bindRoutePopup(feature, layer);
 							createRouteInfo(feature);
 						}
 					}).addTo(RouteLayer);
