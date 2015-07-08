@@ -8,9 +8,9 @@ SELECT
 	iso3166,
 	name
 FROM regions
-WHERE 
+WHERE
 	id='$r_id'
-	") or die(mysql_error());
+	");
 
 $sql_statistics_by_places= pg_query("
 SELECT
@@ -44,9 +44,9 @@ ORDER BY
 	routes.type,
 	routes.name
 ") or die(mysql_error());
-	
+
 $sql_statistics_by_transport= pg_query("
-SELECT	
+SELECT
 	route_bus,
 	route_trolleybus,
 	route_share_taxi,
@@ -57,7 +57,7 @@ SELECT
 	route_master_share_taxi,
 	route_master_tram,
 	route_master_train,
-	
+
 	stop_position,
 	platform,
 	station
@@ -73,13 +73,13 @@ $sql_statistics_by_date= pg_query("
 		route_share_taxi+
 		route_tram+
 		route_train) as route,
-		
+
 		(route_master_bus+
 		route_master_trolleybus+
 		route_master_share_taxi+
 		route_master_tram+
 		route_master_train) as route_master,
-		
+
 		platform,
 		stop_position,
 		station
@@ -92,8 +92,8 @@ $sql_statistics_by_date= pg_query("
 		20;
 ") or die(mysql_error());
 
-$region_name = pg_fetch_assoc($sql_region)['name'];	
-$output = "<h2 align=center>".$region_name." - статистика</h2>";		
+$region_name = pg_fetch_assoc($sql_region)['name'];
+$output = "<h2 align=center>".$region_name." - статистика</h2>";
 
 $output.="
 <h3>Статистика по населенным пунктам:</h3>
@@ -109,7 +109,7 @@ $output.="
 		</tr>
 	</thead>
 	<tbody>";
-	
+
 while ($row_by_places = pg_fetch_assoc($sql_statistics_by_places)){
 	$output.="
 	<tr class='highlight'>
@@ -161,7 +161,7 @@ $output.="
 		<td>Поезд</td>
 		<td>".$row_by_transport['route_train']."</td>
 		<td>".$row_by_transport['route_master_train']."</td>
-	</tr>	
+	</tr>
 	</tbody>
 </table>";
 
@@ -179,8 +179,8 @@ $output.="
 		</tr>
 	</thead>
 	<tbody>";
-	
-while ($row_by_date = pg_fetch_assoc($sql_statistics_by_date)){	
+
+while ($row_by_date = pg_fetch_assoc($sql_statistics_by_date)){
 	$output.="
 	<tr class='highlight'>
 		<td>".$row_by_date['tstamp']."</td>

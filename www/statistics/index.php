@@ -5,19 +5,19 @@ $sql_statistics_by_region= pg_query("
 	SELECT
 		statistics_by_region.region_id,
 		regions.name as region_name,
-		
+
 		(route_bus+
 		route_trolleybus+
 		route_share_taxi+
 		route_tram+
 		route_train) as route,
-		
+
 		(route_master_bus+
 		route_master_trolleybus+
 		route_master_share_taxi+
 		route_master_tram+
 		route_master_train) as route_master,
-		
+
 		platform,
 		stop_position,
 		station
@@ -28,7 +28,7 @@ $sql_statistics_by_region= pg_query("
 		statistics_by_region.region_id=regions.id and
 		statistics_by_region.tstamp=(SELECT MAX(tstamp) from statistics_by_region)
 	ORDER BY name
-") or die(mysql_error());
+");
 
 $sql_statistics_by_date= pg_query("
 	SELECT
@@ -38,13 +38,13 @@ $sql_statistics_by_date= pg_query("
 		route_share_taxi+
 		route_tram+
 		route_train) as route,
-		
+
 		(route_master_bus+
 		route_master_trolleybus+
 		route_master_share_taxi+
 		route_master_tram+
 		route_master_train) as route_master,
-		
+
 		platform,
 		stop_position,
 		station
@@ -54,7 +54,7 @@ $sql_statistics_by_date= pg_query("
 		tstamp desc
 	LIMIT
 		20;
-") or die(mysql_error());
+");
 
 $output = "<h2 align=center>Статистические данные</h2>";
 $output.="<h3>Статистика по регионам:</h3>";
@@ -72,7 +72,7 @@ $output=$output."
 	</thead>
 	<tbody>";
 
-while ($row_by_region = pg_fetch_assoc($sql_statistics_by_region)){	
+while ($row_by_region = pg_fetch_assoc($sql_statistics_by_region)){
 	$output.=
 	"<tr class='highlight'>
 		<td><a href='region.php?id=".$row_by_region['region_id']."'>".$row_by_region['region_name']."</a></td>
@@ -82,7 +82,7 @@ while ($row_by_region = pg_fetch_assoc($sql_statistics_by_region)){
 		<td>".$row_by_region['stop_position']."</td>
 		<td>".$row_by_region['station']."</td>
 	</tr>";
-}	
+}
 
 $output.="</tbody></table>";
 
@@ -100,8 +100,8 @@ $output.="
 		</tr>
 	</thead>
 	<tbody>";
-	
-while ($row_by_date = pg_fetch_assoc($sql_statistics_by_date)){	
+
+while ($row_by_date = pg_fetch_assoc($sql_statistics_by_date)){
 	$output.="
 	<tr class='highlight'>
 		<td>".$row_by_date['tstamp']."</td>

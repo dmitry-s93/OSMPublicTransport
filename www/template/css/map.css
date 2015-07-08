@@ -4,10 +4,15 @@ div.map {
 
 #content_panel {
 	float:left;
-	width: 250px;
+	width: 280px;
 	height: 100%;
 	border-right: 6px solid #FFC34B;
 	display: none;
+}
+
+#content_header {
+	padding: 6px;
+	text-align: left;
 }
 
 div.top-message {
@@ -42,7 +47,7 @@ span.fa {
 }
 
 ol.marker-list {
-	height: calc(100% - 70px);
+	height: calc(100% - 150px);
 	bottom:0;
 	overflow-x:auto;
 	margin:0;

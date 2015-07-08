@@ -104,7 +104,6 @@ function getRouteData(rID) {
 		StopLayer.clearLayers();
 		$("#platform-list").empty();
 		$("#stop-position-list").empty();
-		createRouteInfo();
 		$.ajax({
 			type: "POST",
 			url: "/ajax/get_route_data.php",
@@ -121,7 +120,10 @@ function getRouteData(rID) {
 							"weight": 6,
 							"opacity": 0.6
 						},
-						onEachFeature: bindRoutePopup
+						onEachFeature: function (feature) {
+							bindRoutePopup;
+							createRouteInfo(feature);
+						}
 					}).addTo(RouteLayer);
 					delete geojsonRoute;
 				}
@@ -407,24 +409,29 @@ function loadFeaturePopupData(feature, layer) {
 }
 
 function bindRoutePopup(feature, layer) {
-
 	var popupContent;
-
 	if (feature.properties) {
-
-		if (feature.properties.type == 'route') {
-			popupContent = "<b>" + feature.properties.name + "</b>";
-			popupContent += "<hr>";
-			popupContent += feature.properties.description;
+		with (feature.properties) {
+			if ((from !== '') & (to !== '')) {
+				var from_to = ": " + from + " ⇨ " + to;
+			} else {
+				from_to = '';
+			}
+			popupContent = "<b>" + type + " " + ref + from_to + "</b><hr>";
+			popupContent += "Протяженность маршрута: " + length + " км.";
 		}
 		layer.bindPopup(popupContent);
 	}
 }
 
-function createRouteInfo() {
+function createRouteInfo(feature) {
 	var contentPanel = document.getElementById('content_panel');
 	contentPanel.innerHTML =
-		'<div align="center"><a href="#" onclick="clearRouteLayer(); return false;">Закрыть маршрут</a></div> \n\
+		'<div id="content_header"> \n\
+			<div align="center"><a href="#" onclick="clearRouteLayer(); return false;">Закрыть маршрут</a><hr></div> \n\
+			' + feature.properties.type + ' ' +  feature.properties.ref + '<br> \n\
+			Протяженность: ' + feature.properties.length +' км.<hr> \n\
+		</div> \n\
 		<form action="" align="center"> \n\
 				<select id="SelectList" onchange="SetList()"> \n\
 					<option value="platform"> Остановки / платформы </option> \n\

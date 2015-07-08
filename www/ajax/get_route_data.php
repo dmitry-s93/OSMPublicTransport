@@ -49,23 +49,16 @@ $sql_platforms=pg_query("
 $result="";
 
 while ($row_route = pg_fetch_assoc($sql_route)){
-
-	if ($row_route['route_from']<>'' and $row_route['route_to']<>'') {
-		$pt_name=": ".$row_route['route_from']." ⇨ ".$row_route['route_to'];
-	} else {
-		$pt_name="";
-	}
-
-	$route_name=$transport_type_names[$row_route['type']]." ".$row_route['ref'].$pt_name;
-
 	if ($row_route['geom'] != "") {
 		$result.="
 			geojsonRoute = {
 				'type': 'Feature',
 				'properties': {
-					'type': 'route',
-					'name': '".$route_name."',
-					'description': 'Протяженность маршрута: ".round($row_route['length']/1000,3)." км.'
+					'type': '".$transport_type_names[$row_route['type']]."',
+					'ref': '".$row_route['ref']."',
+					'from': '".$row_route['route_from']."',
+					'to' :'".$row_route['route_to']."',
+					'length':'".round($row_route['length']/1000,3)."'
 				},
 				'geometry': ".$row_route['geom']."
 			}";
