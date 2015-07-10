@@ -89,6 +89,14 @@ pre {
 	text-shadow: 2px 2px 4px black;
 }
 
+div.content_center {
+	max-width: 900px;
+	text-align: justify;
+	position: absolute;
+	left: 50%;
+	margin-left: -450px;
+}
+
 
 /* Links */
 a {
