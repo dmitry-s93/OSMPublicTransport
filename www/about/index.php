@@ -11,7 +11,7 @@ $sql_update_date= pg_query("
 $update_date = pg_fetch_assoc($sql_update_date)['tstamp'];
 
 $output = "
-	<div class='content_center'>
+	<div class='content_body'>
 		<h2 align=center>О сайте</h2>
 		<p>
 			Данный веб-сайт представляет собой средство просмотра и валидации маршрутов общественного транспорта международного проекта <a href='http://openstreetmap.org'>OpenStreetMap</a>. Для просмотра доступны маршруты автобусов, троллейбусов, маршрутных такси, трамваев и поездов.<br>
