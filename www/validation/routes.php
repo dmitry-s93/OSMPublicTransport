@@ -16,16 +16,16 @@ case "from_to":
 	$r_validation="not(transport_routes.tags::hstore ?| ARRAY['from','to'])";
 	$heading="Список маршрутов без from/to";
 	break;
-}	
+}
 
 $sql_region = pg_query("
 SELECT
 	id,
 	name
 FROM regions
-WHERE 
+WHERE
 	id=".$region_id
-) or die(mysql_error());
+);
 
 $sql_routes= pg_query("
 SELECT DISTINCT
@@ -46,12 +46,12 @@ WHERE
 	transport_location.region_id=".$region_id." and
 	".$r_validation."
 ORDER BY route, int_ref
-") or die(mysql_error());
+");
 
 $row = pg_fetch_assoc($sql_region);
 $region_name=$row['name'];
 
-$output = "<h2 align=center>".$heading." (".$region_name.")</h2>";
+$output = "<div class='content_body_table'><h2 align=center>".$heading." (".$region_name.")</h2>";
 
 $output.="
 <table border>
@@ -76,7 +76,7 @@ while ($row = pg_fetch_assoc($sql_routes)){
 		$output.="<td class='warning'>-</td>";
 	} else {
 		$output.="<td>".$row['ref']."</td>";
-	}	
+	}
 	if ($row['name']=="") {
 		$output.="<td class='warning'>-</td>";
 	} else {
@@ -94,11 +94,11 @@ while ($row = pg_fetch_assoc($sql_routes)){
 	}
 	$output.="<td>".round($row['length']/1000,3)." км.</td>
 	</tr>";
-}	
+}
 
-$output.="</tbody></table><br>";
+$output.="</tbody></table></div>";
 
-pg_close($dbconn);		
+pg_close($dbconn);
 
 $page = 'validation';
 include(TEMPLATE_PATH);

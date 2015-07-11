@@ -56,9 +56,10 @@ $sql_statistics_by_date= pg_query("
 		20;
 ");
 
-$output = "<h2 align=center>Статистические данные</h2>";
-$output.="<h3>Статистика по регионам:</h3>";
-$output=$output."
+$output = "<div class='content_body_table'>
+<h2 align=center>Статистические данные</h2>
+<h3>Статистика по регионам:</h3>";
+$output .="
 <table border width=100%>
 	<thead>
 		<tr>
@@ -113,7 +114,7 @@ while ($row_by_date = pg_fetch_assoc($sql_statistics_by_date)){
 	</tr>";
 }
 
-$output.="</tbody></table><br>";
+$output.="</tbody></table></div>";
 
 pg_close($dbconn);
 

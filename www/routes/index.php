@@ -6,36 +6,36 @@ SELECT federal_district
 FROM regions
 GROUP BY federal_district
 ORDER BY federal_district
-") or die(mysql_error());
-    
-$output = "<h2 align=center>Список регионов</h2>";
+");
 
-while ($row_district = pg_fetch_assoc($sql_districts)){	
-	$output=$output. "<h3>" . $row_district['federal_district'] . ":</h3>";	
-	
-	$output=$output."<p align=justify>";
-	
+$output = "<div class='content_body'><h2 align=center>Список регионов</h2>";
+
+while ($row_district = pg_fetch_assoc($sql_districts)){
+	$output .= "<h3>" . $row_district['federal_district'] . ":</h3>";
+
+	$output .= "<p align=justify>";
+
 	$sql_regions = pg_query("
 	SELECT id, federal_district, name
 	FROM regions
 	WHERE federal_district='".$row_district['federal_district']."'
 	ORDER BY name
-	") or die(mysql_error());
-	
+	");
+
 	$len = pg_num_rows($sql_regions); $tmp=0;
 	while ($row_region = pg_fetch_assoc($sql_regions)){
 		$tmp++;
-		$output=$output. "<a href='region.php?id=" . $row_region['id'] . "'>" . $row_region['name'] . "</a>";	
+		$output .= "<a href='region.php?id=" . $row_region['id'] . "'>" . $row_region['name'] . "</a>";
 		if ($tmp<$len)
 		{
-			$output=$output.", ";
-		}	
+			$output .= ", ";
+		}
 	}
-	
-	$output=$output."</p>";
-}
-    
 
+	$output .= "</p>";
+}
+
+$output .= "</div>";
 
 // Очистка результата
 pg_free_result($sql_districts);

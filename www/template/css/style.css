@@ -73,12 +73,8 @@ li.menu_item_right a {
 }
 
 /* Content */
-h3 {
-	padding:0px 20px;
-}
-
 p {
-	padding:0px 40px;
+	padding:0px 10px;
 }
 
 pre {
@@ -90,12 +86,15 @@ pre {
 }
 
 div.content_body {
-	position: relative;
 	max-width: 900px;
-	text-align: justify;
-	margin: auto;
 }
 
+div.content_body, div.content_body_table {
+	position: relative;
+	text-align: justify;
+	margin: auto;
+	padding: 0px 20px 20px 20px;
+}
 
 /* Links */
 a {
@@ -108,10 +107,9 @@ a:hover {
 	text-decoration: underline;
 }
 
-
 /* Tables */
 table {
-	width: 95%;
+	width: 100%;
 	margin-left: auto;
 	margin-right: auto;
 	border-collapse: collapse;
@@ -132,9 +130,7 @@ thead {
 	background: #AED982;
 	color: #333333;
 }
-tbody {
-	/*font-size: 11pt; */
-}
+
 tfoot {
 	background: #AED982;
 }

@@ -43,7 +43,7 @@ GROUP BY
 ORDER BY
 	routes.type,
 	routes.name
-") or die(mysql_error());
+");
 
 $sql_statistics_by_transport= pg_query("
 SELECT
@@ -63,7 +63,7 @@ SELECT
 	station
 FROM statistics_by_region
 WHERE region_id=".$r_id."
-") or die(mysql_error());
+");
 
 $sql_statistics_by_date= pg_query("
 	SELECT
@@ -90,10 +90,10 @@ $sql_statistics_by_date= pg_query("
 		tstamp desc
 	LIMIT
 		20;
-") or die(mysql_error());
+");
 
 $region_name = pg_fetch_assoc($sql_region)['name'];
-$output = "<h2 align=center>".$region_name." - статистика</h2>";
+$output = "<div class='content_body_table'><h2 align=center>".$region_name." - статистика</h2>";
 
 $output.="
 <h3>Статистика по населенным пунктам:</h3>
@@ -192,7 +192,7 @@ while ($row_by_date = pg_fetch_assoc($sql_statistics_by_date)){
 	</tr>";
 }
 
-$output.="</tbody></table><br>";
+$output.="</tbody></table></div>";
 
 pg_close($dbconn);
 

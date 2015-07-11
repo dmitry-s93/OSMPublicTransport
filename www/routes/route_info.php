@@ -12,7 +12,7 @@ SELECT
 FROM places
 WHERE
 	id=".$r_place
-) or die(mysql_error());
+);
 
 //Check version
 $sql_route_version = pg_query("
@@ -30,7 +30,7 @@ $sql_route_version = pg_query("
 		relation_members.member_role in ('forward:stop','backward:stop') and
 		transport_routes.tags->'route'='".$r_type."' and
 		transport_routes.tags->'ref'='".$r_ref."'
-	") or die(mysql_error());
+	");
 
 if (pg_fetch_assoc($sql_route_version)['count']>0) {
 	$route_version=1;
@@ -56,13 +56,13 @@ $sql_route = pg_query("
 		transport_location.route_id=transport_routes.id and
 		transport_routes.tags->'route'='".$r_type."' and
 		transport_routes.tags->'ref'='".$r_ref."'
-	") or die(mysql_error());
+	");
 
 $row = pg_fetch_assoc($sql_place);
 $place_id=$row['id'];
 $place_name=$row['name'];
 
-$output = "<h2 align=center>".$transport_type_names[$r_type]." №".$r_ref." (<a href='routes_list.php?id=".$place_id."'>".$place_name."</a>)</h2>";
+$output = "<div class='content_body'><h2 align=center>".$transport_type_names[$r_type]." №".$r_ref." (<a href='routes_list.php?id=".$place_id."'>".$place_name."</a>)</h2>";
 
 while ($row = pg_fetch_assoc($sql_route)){
 
@@ -92,7 +92,7 @@ while ($row = pg_fetch_assoc($sql_route)){
 			relation_members.member_id=transport_stops.id and
 			relation_members.member_role in ('stop','stop_entry_only','stop_exit_only')
 		ORDER BY relation_members.sequence_id
-		") or die(mysql_error());
+		");
 
 		$sql_platform = pg_query("
 		SELECT
@@ -108,7 +108,7 @@ while ($row = pg_fetch_assoc($sql_route)){
 			relation_members.member_id=transport_stops.id and
 			relation_members.member_role in ('platform','platform_entry_only','platform_exit_only')
 		ORDER BY platform_order;
-		") or die(mysql_error());
+		");
 
 		$output.="<pre>";
 
@@ -141,7 +141,7 @@ while ($row = pg_fetch_assoc($sql_route)){
 			relation_members.member_id=transport_stops.id and
 			relation_members.member_role in ('forward:stop','backward:stop')
 		ORDER BY platform_order
-		") or die(mysql_error());
+		");
 
 		$i=1; $j=1; $forward=''; $backward='';
 		while ($row_stop = pg_fetch_assoc($sql_stop)){
@@ -163,7 +163,7 @@ while ($row = pg_fetch_assoc($sql_route)){
 	}
 }
 
-$output=$output. "<br>";
+$output .= "</div>";
 
 pg_close($dbconn);
 

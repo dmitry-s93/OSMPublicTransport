@@ -21,9 +21,9 @@ FROM
 		transport_validation) as t_validation
 ON regions.id=t_validation.region_id
 ORDER BY region_name
-") or die(mysql_error());
+");
 
-$output = "<h2 align=center>Качество маршрутов по регионам</h2>";
+$output = "<div class='content_body_table'><h2 align=center>Качество маршрутов по регионам</h2>";
 
 $output.="
 <table border width=100%>
@@ -47,12 +47,12 @@ while ($row = pg_fetch_assoc($sql_quality)){
 		<td><a href='routes.php?id=".$row['region_id']."&val=name'>".($row['no_name']+0)."</a></td>
 		<td><a href='routes.php?id=".$row['region_id']."&val=from_to'>".($row['no_from_to']+0)."</a></td>
 	</tr>";
-}	
+}
 
-$output=$output."</tbody></table><br>";
+$output=$output."</tbody></table></div>";
 
 pg_free_result($sql_quality);
-pg_close($dbconn);		
+pg_close($dbconn);
 
 $page_title="Качество маршрутов общественного транспорта OpenStreetMap";
 $page = 'validation';

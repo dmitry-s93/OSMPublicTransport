@@ -18,7 +18,7 @@ SELECT
 FROM places
 WHERE
 	id=".$place_id
-) or die(mysql_error());
+);
 
 $sql_routes= pg_query("
 SELECT
@@ -39,7 +39,7 @@ WHERE
 	transport_routes.id=transport_location.route_id and
 	".$r_validation."
 ORDER BY route, substring(transport_routes.tags->'ref' from '^\\d+')::int
-") or die(mysql_error());
+");
 
 $row = pg_fetch_assoc($sql_place);
 
@@ -50,7 +50,7 @@ if ($place_id !== "null") {
 	$place_name="вне населенных пунктов";
 }
 
-$output = "<h2 align=center>Список маршрутов (".$place_name.")</h2>";
+$output = "<div class='content_body_table'><h2 align=center>Список маршрутов (".$place_name.")</h2>";
 
 $output.="
 <table border width=100%>
@@ -107,7 +107,7 @@ while ($row = pg_fetch_assoc($sql_routes)){
 	</tr>";
 }
 
-$output.="</tbody></table><br>";
+$output.="</tbody></table></div>";
 
 pg_close($dbconn);
 
