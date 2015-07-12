@@ -86,7 +86,7 @@ pre {
 }
 
 div.content_body {
-	max-width: 900px;
+	max-width: 1000px;
 }
 
 div.content_body, div.content_body_table {
@@ -139,5 +139,9 @@ tr.highlight:hover {
 	color: #1A1A1A;
 }
 td.warning {
+	background: #FF9999;
+}
+
+tr.highlight:hover td.warning {
 	background: #FF8080;
 }

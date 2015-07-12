@@ -2,12 +2,37 @@ div.map {
 	height: 100%;
 }
 
-#content_panel {
+#left_panel {
+	float:left;
+	height: 100%;
+	display: none;
+}
+
+#left_panel_content {
 	float:left;
 	width: 280px;
 	height: 100%;
 	border-right: 6px solid #FFC34B;
-	display: none;
+}
+
+#left_panel_control {
+	background-color: #FFC34B;
+	position: absolute;
+	top: 50%;
+	left: 286px;
+	text-align: center;
+	padding: 6px;
+	cursor: pointer;
+	border-top: solid 2px;
+	border-right: solid 2px;
+	border-bottom: solid 2px;
+	border-color: #FFF;
+	border-radius: 0px 5px 5px 0px;
+}
+
+#left_panel_control:hover {
+	color: #1E90FF;
+	border-color: #1E90FF;
 }
 
 #content_header {

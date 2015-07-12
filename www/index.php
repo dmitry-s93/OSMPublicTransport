@@ -15,7 +15,24 @@ $output="
 	<script src='template/js/Control.FullScreen.js'></script>
 	<script src='template/js/L.Control.Locate.min.js' ></script>
 
-	<div id='content_panel'></div>
+	<script type='application/javascript'>
+		function left_panel_toggle() {
+			$('#left_panel_content').toggle();
+			if ($('#left_panel_content').css('display') == 'none') {
+				$('#left_panel_control').css('left', '0px');
+			} else {
+				$('#left_panel_control').css('left', '286px');
+			}
+			map.invalidateSize();
+		}
+	</script>
+
+	<div id='left_panel'>
+		<div id='left_panel_content'></div>
+		<div id='left_panel_control' class='leaflet-control' onclick='left_panel_toggle()'>
+			<span>⇤<br>⇥</span>
+		</div>
+	</div>
 	<div id='map' class='map'></div>
 	";
 

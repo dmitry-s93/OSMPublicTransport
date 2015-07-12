@@ -84,7 +84,7 @@ function clearRouteLayer() {
 
 	RouteID = '';
 
-	$('#content_panel').hide();
+	$('#left_panel').hide();
 	map.invalidateSize();
 	getData();
 	setMapURL();
@@ -190,7 +190,7 @@ function getRouteData(rID) {
 					document.getElementById('platform-list').style.display = 'none';
 					document.getElementById('stop-position-list').style.display = 'block';
 				}
-				$('#content_panel').show();
+				$('#left_panel').show();
 				map.invalidateSize();
 				map.fitBounds(RouteLayer.getBounds());
 				setMapURL();
@@ -425,7 +425,7 @@ function bindRoutePopup(feature, layer) {
 }
 
 function createRouteInfo(feature) {
-	var contentPanel = document.getElementById('content_panel');
+	var contentPanel = document.getElementById('left_panel_content');
 	contentPanel.innerHTML =
 		'<div id="content_header"> \n\
 			<div align="center"><a href="#" onclick="clearRouteLayer(); return false;">Закрыть маршрут</a><hr></div> \n\
