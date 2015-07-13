@@ -60,7 +60,7 @@ if ($city_town_count+$village_count>0) {
 			"<p align=justify>";
 		while ($row = pg_fetch_assoc($sql_city_town)){
 			$i++;
-			$output .= "<a href='routes_list.php?id=" . $row['id'] . "'>" . $row['name'] . "</a>";
+			$output .= "<a href='routes_list?id=" . $row['id'] . "'>" . $row['name'] . "</a>";
 			if ($i<$city_town_count)
 			{
 				$output .= ", ";
@@ -75,7 +75,7 @@ if ($city_town_count+$village_count>0) {
 			"<p align=justify>";
 		while ($row = pg_fetch_assoc($sql_village)){
 			$i++;
-			$output=$output. "<a href='routes_list.php?id=" . $row['id'] . "'>" . $row['name'] . "</a>";
+			$output=$output. "<a href='routes_list?id=" . $row['id'] . "'>" . $row['name'] . "</a>";
 			if ($i<$village_count)
 			{
 				$output .= ", ";

@@ -25,7 +25,7 @@ while ($row_district = pg_fetch_assoc($sql_districts)){
 	$len = pg_num_rows($sql_regions); $tmp=0;
 	while ($row_region = pg_fetch_assoc($sql_regions)){
 		$tmp++;
-		$output .= "<a href='region.php?id=" . $row_region['id'] . "'>" . $row_region['name'] . "</a>";
+		$output .= "<a href='region?id=" . $row_region['id'] . "'>" . $row_region['name'] . "</a>";
 		if ($tmp<$len)
 		{
 			$output .= ", ";

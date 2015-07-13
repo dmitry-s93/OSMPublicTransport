@@ -58,7 +58,7 @@ if ($city_town_count+$village_count>0) {
 			"<p align=justify>";
 		while ($row = pg_fetch_assoc($sql_city_town)){
 			$i++;
-			$output.="<a href='routes_by_place.php?place_id=" . $row['id'] . "'>" . $row['name'] . "</a>";
+			$output.="<a href='routes_by_place?place_id=" . $row['id'] . "'>" . $row['name'] . "</a>";
 			if ($i<$city_town_count)
 			{
 				$output.=", ";
@@ -73,7 +73,7 @@ if ($city_town_count+$village_count>0) {
 			"<p align=justify>";
 		while ($row = pg_fetch_assoc($sql_village)){
 			$i++;
-			$output.="<a href='routes_by_place.php?place_id=" . $row['id'] . "'>" . $row['name'] . "</a>";
+			$output.="<a href='routes_by_place?place_id=" . $row['id'] . "'>" . $row['name'] . "</a>";
 			if ($i<$village_count)
 			{
 				$output.=", ";
@@ -85,7 +85,7 @@ if ($city_town_count+$village_count>0) {
 
 $output.="<hr>
 <h3>Проверки по региону:</h3>
-<p><a href='routes_by_place.php?region_id=".$r_id."&place_id=null'  target='_blank'>Маршруты вне населенных пунктов</a></p>
+<p><a href='routes_by_place?region_id=".$r_id."&place_id=null'  target='_blank'>Маршруты вне населенных пунктов</a></p>
 </div>";
 
 pg_close($dbconn);

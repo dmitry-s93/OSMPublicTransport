@@ -41,11 +41,11 @@ $output.="
 while ($row = pg_fetch_assoc($sql_quality)){
 	$output=$output.
 	"<tr class='highlight'>
-		<td><a href='region.php?id=".$row['region_id']."'>".$row['region_name']."</td>
+		<td><a href='region?id=".$row['region_id']."'>".$row['region_name']."</td>
 		<td>".($row['routes']+0)."</a></td>
-		<td><a href='routes.php?id=".$row['region_id']."&val=ref'>".($row['no_ref']+0)."</a></td>
-		<td><a href='routes.php?id=".$row['region_id']."&val=name'>".($row['no_name']+0)."</a></td>
-		<td><a href='routes.php?id=".$row['region_id']."&val=from_to'>".($row['no_from_to']+0)."</a></td>
+		<td><a href='routes?id=".$row['region_id']."&val=ref'>".($row['no_ref']+0)."</a></td>
+		<td><a href='routes?id=".$row['region_id']."&val=name'>".($row['no_name']+0)."</a></td>
+		<td><a href='routes?id=".$row['region_id']."&val=from_to'>".($row['no_from_to']+0)."</a></td>
 	</tr>";
 }
 
