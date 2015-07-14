@@ -343,6 +343,12 @@ function loadFeaturePopupData(feature, layer) {
 				routes = JSON.parse(data);
 				for (var i = 0, length = routes.length; i < length; i++) {
 					if (i in routes) {
+						if (routes[i].from == null) {
+							routes[i].from = 'Не указано';
+						}
+						if (routes[i].to == null) {
+							routes[i].to = 'Не указано';
+						}
 						switch (routes[i].type) {
 							case 'bus':
 								busRes += '<a href="#" onclick="getRouteData('+routes[i].id+'); return false;">'+routes[i].ref+'</a> ('+routes[i].from+' ⇨ '+routes[i].to+')<br>';
@@ -350,7 +356,7 @@ function loadFeaturePopupData(feature, layer) {
 							case 'trolleybus':
 								trolleybusRes += '<a href="#" onclick="getRouteData('+routes[i].id+'); return false;">'+routes[i].ref+'</a> ('+routes[i].from+' ⇨ '+routes[i].to+')<br>';
 								break;
-							case 'sharetaxi':
+							case 'share_taxi':
 								sharetaxiRes += '<a href="#" onclick="getRouteData('+routes[i].id+'); return false;">'+routes[i].ref+'</a> ('+routes[i].from+' ⇨ '+routes[i].to+')<br>';
 								break;
 							case 'tram':
