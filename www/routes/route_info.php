@@ -5,8 +5,6 @@ $r_place = $_GET['id'];
 $r_type = $_GET['type'];
 $r_ref = $_GET['ref'];
 
-//$r_ref = iconv('cp1251', 'utf-8', $r_ref);
-
 $sql_place = pg_query("
 SELECT
 	id,
