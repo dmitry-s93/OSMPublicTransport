@@ -15,7 +15,7 @@ $output="
 	<script src='template/js/Control.FullScreen.js'></script>
 	<script src='template/js/L.Control.Locate.min.js' ></script>
 
-	<script type='application/javascript'>
+	<script type='text/javascript'>
 		function left_panel_toggle() {
 			$('#left_panel_content').toggle();
 			if ($('#left_panel_content').css('display') == 'none') {

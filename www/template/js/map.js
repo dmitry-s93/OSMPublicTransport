@@ -78,9 +78,8 @@ function setLayersOrder() {
 
 function clearRouteLayer() {
 	RouteLayer.clearLayers();
-	StationLayer.clearLayers();
-	PlatformLayer.clearLayers();
-	StopLayer.clearLayers();
+	RoutePlatformLayer.clearLayers();
+	RouteStopLayer.clearLayers();
 
 	RouteID = '';
 
@@ -91,6 +90,9 @@ function clearRouteLayer() {
 }
 
 var RouteLayer = new L.FeatureGroup();
+var RoutePlatformLayer = new L.FeatureGroup();
+var RouteStopLayer = new L.FeatureGroup();
+
 var StationLayer = new L.FeatureGroup();
 var PlatformLayer = new L.FeatureGroup();
 var StopLayer = new L.FeatureGroup();
@@ -99,6 +101,8 @@ function getRouteData(rID) {
 	if (rID !== '') {
 		RouteID = rID;
 		RouteLayer.clearLayers();
+		RoutePlatformLayer.clearLayers();
+		RouteStopLayer.clearLayers();
 		StationLayer.clearLayers();
 		PlatformLayer.clearLayers();
 		StopLayer.clearLayers();
@@ -150,7 +154,7 @@ function getRouteData(rID) {
 							});
 							createListElements(feature, layer);
 						}
-					}).addTo(StopLayer);
+					}).addTo(RouteStopLayer);
 					delete geojsonStops;
 				}
 				if (typeof geojsonPlatforms !== "undefined") {
@@ -176,14 +180,13 @@ function getRouteData(rID) {
 							});
 							createListElements(feature, layer);
 						}
-					}).addTo(PlatformLayer);
+					}).addTo(RoutePlatformLayer);
 					delete geojsonPlatforms;
 				}
 
 				map.addLayer(RouteLayer);
-				map.addLayer(StopLayer);
-				map.addLayer(PlatformLayer);
-				setLayersOrder();
+				map.addLayer(RouteStopLayer);
+				map.addLayer(RoutePlatformLayer);
 
 				if (document.getElementById('stop-position-list').childNodes.length > document.getElementById('platform-list').childNodes.length) {
 					document.getElementById("SelectList").options[1].selected=true;
@@ -344,10 +347,10 @@ function loadFeaturePopupData(feature, layer) {
 				for (var i = 0, length = routes.length; i < length; i++) {
 					if (i in routes) {
 						if (routes[i].from == null) {
-							routes[i].from = 'Не указано';
+							routes[i].from = 'Неизвестно';
 						}
 						if (routes[i].to == null) {
-							routes[i].to = 'Не указано';
+							routes[i].to = 'Неизвестно';
 						}
 						switch (routes[i].type) {
 							case 'bus':
@@ -450,6 +453,10 @@ function createRouteInfo(feature) {
 
 function createListElements(feature, layer) {
 	if (feature.properties) {
+		if (feature.properties.name == "") {
+			feature.properties.name = "Без названия";
+		}
+		
 		if (feature.properties.type == 'platform') {
 			var item = document.getElementById('platform-list').appendChild(document.createElement('li'));
 			item.innerHTML = feature.properties.name;

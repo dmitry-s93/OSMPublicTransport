@@ -52,7 +52,7 @@ for ($i = 0; $i < count($pt_array); $i++) {
 			"<p align=justify>";
 		while ($row = pg_fetch_assoc($sql_transport)){
 			$tmp++;
-			$output .= "<a href='route_info?id=".$place_id."&type=" . $row['type'] . "&ref=" . $row['ref'] ."'>". $row['ref'] . "</a>";
+			$output .= "<a href='route_info?id=".$place_id."&type=" . $row['type'] . "&ref=" . urlencode($row['ref']) ."'>". $row['ref'] . "</a>";
 			if ($tmp<$pt_count)
 			{
 				$output .= ", ";
