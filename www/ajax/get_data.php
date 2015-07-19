@@ -46,9 +46,9 @@ $sql_query=pg_query("
 			ELSE 'unknown'
 		END as type,
 		CASE
-			WHEN (transport_stops.tags::hstore ? 'name')
-			THEN transport_stops.tags->'name'
-			ELSE stop_area.tags->'name'
+			WHEN (stop_area.tags::hstore ? 'name')
+			THEN stop_area.tags->'name'
+			ELSE transport_stops.tags->'name'
 		END as name,
 		ST_AsGeoJSON(geom) as geom
 	FROM
@@ -75,7 +75,7 @@ function geoJsonEncode($query) {
 		$stationResult = "geojson_stations = { 'type': 'FeatureCollection','features': [";
 		$platformResult = "geojson_platforms = { 'type': 'FeatureCollection','features': [";
 		$stopResult = "geojson_stop_positions = { 'type': 'FeatureCollection','features': [";
-		
+
 		while ($row = pg_fetch_assoc($query)) {
 			if ($row['geom'] != "") {
 				$feature="
@@ -89,7 +89,7 @@ function geoJsonEncode($query) {
 						'geometry': ".$row['geom']."
 					},";
 				}
-				
+
 				switch ($row['type']) {
 					case 'station':
 						$stationResult .= $feature;

@@ -19,9 +19,9 @@ $sql_stops = pg_query("
 	SELECT
 		transport_stops.id,
 		CASE
-			WHEN (transport_stops.tags::hstore ? 'name')
-			THEN transport_stops.tags->'name'
-			ELSE stop_area.tags->'name'
+			WHEN (stop_area.tags::hstore ? 'name')
+			THEN stop_area.tags->'name'
+			ELSE transport_stops.tags->'name'
 		END as name,
 		relation_members.member_role as role,
 		ST_AsGeoJSON(transport_stops.geom) as geom
@@ -52,9 +52,9 @@ $sql_platforms = pg_query("
 	SELECT
 		transport_stops.id,
 		CASE
-			WHEN (transport_stops.tags::hstore ? 'name')
-			THEN transport_stops.tags->'name'
-			ELSE stop_area.tags->'name'
+			WHEN (stop_area.tags::hstore ? 'name')
+			THEN stop_area.tags->'name'
+			ELSE transport_stops.tags->'name'
 		END as name,
 		relation_members.member_role as role,
 		ST_AsGeoJSON(transport_stops.geom) as geom
