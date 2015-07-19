@@ -4,9 +4,18 @@ include_once ('../include/config.php');
 $point1 = $_POST['point1'];
 $point2 = $_POST['point2'];
 
-$tags_station = "tags->'public_transport'='station' or tags->'amenity'='bus_station' or tags->'railway'='station' or tags->'railway'='halt'";
-$tags_platform = "tags->'public_transport'='platform' or tags->'highway'='bus_stop'";
-$tags_stop_position = "tags->'public_transport'='stop_position' or tags->'railway'='stop' or tags->'railway'='tram_stop'";
+$tags_station = "
+	transport_stops.tags->'public_transport'='station' or
+	transport_stops.tags->'amenity'='bus_station' or
+	transport_stops.tags->'railway'='station' or
+	transport_stops.tags->'railway'='halt'";
+$tags_platform = "
+	transport_stops.tags->'public_transport'='platform' or
+	transport_stops.tags->'highway'='bus_stop'";
+$tags_stop_position = "
+	transport_stops.tags->'public_transport'='stop_position' or
+	transport_stops.tags->'railway'='stop' or
+	transport_stops.tags->'railway'='tram_stop'";
 
 if ($_POST['station'] == 'true') {
 	$TagsArr[] = $tags_station;
@@ -29,22 +38,36 @@ for ($i = 0; $i < count($TagsArr); $i++) {
 
 $sql_query=pg_query("
 	SELECT
-		id,
+		transport_stops.id,
 		CASE
 			WHEN (".$tags_station.") THEN 'station'
 			WHEN (".$tags_platform.") THEN 'platform'
 			WHEN (".$tags_stop_position.") THEN 'stop'
 			ELSE 'unknown'
 		END as type,
-		tags->'name' as name,
+		CASE
+			WHEN (transport_stops.tags::hstore ? 'name')
+			THEN transport_stops.tags->'name'
+			ELSE stop_area.tags->'name'
+		END as name,
 		ST_AsGeoJSON(geom) as geom
 	FROM
 		transport_stops
+	LEFT JOIN
+		(SELECT
+			relation_members.member_id,
+			relations.tags
+		FROM relations, relation_members
+		WHERE
+			relations.id=relation_members.relation_id and
+			relations.tags->'public_transport'='stop_area'
+		) as stop_area
+	ON (transport_stops.id = stop_area.member_id)
 	WHERE
 		(".$condition.") and
 		ST_Contains(ST_SetSRID(ST_MakeBox2D(ST_Point(".$point1."), ST_Point(".$point2.")), 4326), geom)
 	LIMIT
-		300
+		150
 ");
 
 function geoJsonEncode($query) {

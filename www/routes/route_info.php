@@ -80,34 +80,67 @@ while ($row = pg_fetch_assoc($sql_route)){
 		Протяженность маршрута: ".round($row['length']/1000,3)." км.</p>";
 
 		$sql_stop = pg_query("
-		SELECT
-			transport_stops.id,
-			transport_stops.tags->'name' as name,
-			relation_members.member_role as role
-		FROM
-			transport_stops,
-			relation_members
-		WHERE
-			relation_members.relation_id=".$row['id']." and
-			relation_members.member_id=transport_stops.id and
-			relation_members.member_role in ('stop','stop_entry_only','stop_exit_only')
-		ORDER BY relation_members.sequence_id
+			SELECT
+				transport_stops.id,
+				CASE
+					WHEN (transport_stops.tags::hstore ? 'name')
+					THEN transport_stops.tags->'name'
+					ELSE stop_area.tags->'name'
+				END as name,
+				relation_members.member_role as role
+			FROM
+				relation_members,
+				transport_stops
+			LEFT JOIN
+				(SELECT
+					relation_members.member_id,
+					relations.tags
+				FROM
+					relations,
+					relation_members
+				WHERE
+					relations.id=relation_members.relation_id and
+					relations.tags->'public_transport'='stop_area'
+				) as stop_area
+			ON (transport_stops.id = stop_area.member_id)
+			WHERE
+				relation_members.relation_id=".$row['id']." and
+				relation_members.member_id=transport_stops.id and
+				relation_members.member_role in ('stop','stop_entry_only','stop_exit_only')
+			ORDER BY
+				relation_members.sequence_id;
 		");
-
+		
 		$sql_platform = pg_query("
-		SELECT
-			transport_stops.id,
-			transport_stops.tags->'name' as name,
-			relation_members.sequence_id as platform_order,
-			relation_members.member_role as role
-		FROM
-			transport_stops,
-			relation_members
-		WHERE
-			relation_members.relation_id=".$row['id']." and
-			relation_members.member_id=transport_stops.id and
-			relation_members.member_role in ('platform','platform_entry_only','platform_exit_only')
-		ORDER BY platform_order;
+			SELECT
+				transport_stops.id,
+				CASE
+					WHEN (transport_stops.tags::hstore ? 'name')
+					THEN transport_stops.tags->'name'
+					ELSE stop_area.tags->'name'
+				END as name,
+				relation_members.member_role as role
+			FROM
+					relation_members,
+					transport_stops
+			LEFT JOIN
+				(SELECT
+					relation_members.member_id,
+					relations.tags
+				FROM
+					relations,
+					relation_members
+				WHERE
+					relations.id=relation_members.relation_id and
+					relations.tags->'public_transport'='stop_area'
+				) as stop_area
+			ON (transport_stops.id = stop_area.member_id)
+			WHERE
+				relation_members.relation_id=".$row['id']." and
+				relation_members.member_id=transport_stops.id and
+				relation_members.member_role in ('platform','platform_entry_only','platform_exit_only')
+			ORDER BY
+				relation_members.sequence_id;
 		");
 
 		$output.="<pre>";

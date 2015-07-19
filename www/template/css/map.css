@@ -63,8 +63,6 @@ div.top-message {
 	background: #FFF;
 	color: #000;
 	padding: 6px;
-	/*background: #444;
-	color: #FFF;*/
     border-radius: 2px;
 }
 
@@ -82,7 +80,7 @@ ol.marker-list li {
 }
 
 ol.marker-list li:hover {
-	cursor: hand;
+	cursor: pointer;
 	color: #0055FF;
 }
 
