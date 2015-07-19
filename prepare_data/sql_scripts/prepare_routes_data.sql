@@ -6,7 +6,7 @@
 		routes.route_id as id,
 		routes.tstamp,
 		relations.tags,
-		routes.geom,
+		ST_SimplifyPreserveTopology(routes.geom,0.00001) as geom,
 		ST_Length(routes.geom, true) as length
 	FROM
 		relations,
