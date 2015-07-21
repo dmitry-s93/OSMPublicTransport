@@ -21,7 +21,6 @@ div.body {
 	position: fixed;
 	width:100%;
 	height:calc(100% - 56px);
-	min-height:400px;
 	padding-left:0px;
 	display:inline-block;
 	background: #FFFFFF;
@@ -96,6 +95,14 @@ div.content_body, div.content_body_table {
 	text-align: justify;
 	margin: auto;
 	padding: 0px 20px 20px 20px;
+}
+
+span.text_green {
+	color: #008000;
+}
+
+span.text_red {
+	color: #A52A2A;
 }
 
 /* Links */
