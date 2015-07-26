@@ -120,7 +120,7 @@ while ($row_by_region = pg_fetch_assoc($sql_statistics_by_region)){
 	$output.=
 	"<tr class='highlight'>
 		<td><a href='region?id=".$row_by_region['region_id']."'>".$row_by_region['region_name']."</a></td>";
-		
+
 	if ($row_by_region['route'] == $row_by_region['route_prev']) {
 		$output.="<td>".$row_by_region['route']."</td>";
 	} elseif ($row_by_region['route'] > $row_by_region['route_prev']) {

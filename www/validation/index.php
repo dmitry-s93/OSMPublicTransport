@@ -8,7 +8,11 @@ SELECT
 	t_validation.routes,
 	t_validation.no_ref,
 	t_validation.no_name,
-	t_validation.no_from_to
+	t_validation.no_from_to,
+	t_validation_prev.routes as routes_prev,
+	t_validation_prev.no_ref as no_ref_prev,
+	t_validation_prev.no_name as no_name_prev,
+	t_validation_prev.no_from_to as no_from_to_prev
 FROM
 	regions LEFT JOIN
 	(SELECT
@@ -19,7 +23,17 @@ FROM
 		no_from_to
 	FROM
 		transport_validation) as t_validation
-ON regions.id=t_validation.region_id
+	ON regions.id=t_validation.region_id
+	LEFT JOIN
+	(SELECT
+		region_id,
+		routes,
+		no_ref,
+		no_name,
+		no_from_to
+	FROM
+		transport_validation_prev) as t_validation_prev
+	ON regions.id=t_validation_prev.region_id
 ORDER BY region_name
 ");
 
@@ -39,17 +53,47 @@ $output.="
 	<tbody>";
 
 while ($row = pg_fetch_assoc($sql_quality)){
-	$output=$output.
+	$output.=
 	"<tr class='highlight'>
-		<td><a href='region?id=".$row['region_id']."'>".$row['region_name']."</td>
-		<td>".($row['routes']+0)."</a></td>
-		<td><a href='routes?id=".$row['region_id']."&val=ref'>".($row['no_ref']+0)."</a></td>
-		<td><a href='routes?id=".$row['region_id']."&val=name'>".($row['no_name']+0)."</a></td>
-		<td><a href='routes?id=".$row['region_id']."&val=from_to'>".($row['no_from_to']+0)."</a></td>
+		<td><a href='region?id=".$row['region_id']."'>".$row['region_name']."</td>";
+
+	$output.="<td>".($row['routes']+0);
+	if ($row['routes'] > $row['routes_prev']) {
+		$output.=" <span class='text_green'>↗".($row['routes']-$row['routes_prev'])."</span>";
+	} elseif ($row['routes'] < $row['routes_prev']) {
+		$output.=" <span class='text_red'>↘".($row['routes_prev']-$row['routes'])."</span>";
+	}
+	$output.="</td>";
+
+	$output.="<td><a href='routes?id=".$row['region_id']."&val=ref'>".($row['no_ref']+0)."</a>";
+	if ($row['no_ref'] > $row['no_ref_prev']) {
+		$output.=" <span class='text_red'>↗".($row['no_ref']-$row['no_ref_prev'])."</span>";
+	} elseif ($row['no_ref'] < $row['no_ref_prev']) {
+		$output.=" <span class='text_green'>↘".($row['no_ref_prev']-$row['no_ref'])."</span>";
+	}
+	$output.="</td>";
+
+	$output.="<td><a href='routes?id=".$row['region_id']."&val=name'>".($row['no_name']+0)."</a>";
+	if ($row['no_name'] > $row['no_name_prev']) {
+		$output.=" <span class='text_red'>↗".($row['no_name']-$row['no_name_prev'])."</span>";
+	} elseif ($row['no_name'] < $row['no_name_prev']) {
+		$output.=" <span class='text_green'>↘".($row['no_name_prev']-$row['no_name'])."</span>";
+	}
+	$output.="</td>";
+
+	$output.="<td><a href='routes?id=".$row['region_id']."&val=from_to'>".($row['no_from_to']+0)."</a>";
+	if ($row['no_from_to'] > $row['no_from_to_prev']) {
+		$output.=" <span class='text_red'>↗".($row['no_from_to']-$row['no_from_to_prev'])."</span>";
+	} elseif ($row['no_from_to'] < $row['no_from_to_prev']) {
+		$output.=" <span class='text_green'>↘".($row['no_from_to_prev']-$row['no_from_to'])."</span>";
+	}
+	$output.="</td>";
+
+	$output.="
 	</tr>";
 }
 
-$output=$output."</tbody></table></div>";
+$output.="</tbody></table></div>";
 
 pg_free_result($sql_quality);
 pg_close($dbconn);

@@ -62,7 +62,7 @@ $row = pg_fetch_assoc($sql_place);
 $place_id=$row['id'];
 $place_name=$row['name'];
 
-$output = "<div class='content_body'><h2 align=center>".$transport_type_names[$r_type]." №".$r_ref." (<a href='routes_list?id=".$place_id."'>".$place_name."</a>)</h2>";
+$output = "<div class='content_body'><h2 align=center>".$transport_type_names[$r_type]." ".$r_ref." (<a href='routes_list?id=".$place_id."'>".$place_name."</a>)</h2>";
 
 while ($row = pg_fetch_assoc($sql_route)){
 
@@ -200,7 +200,7 @@ $output .= "</div>";
 
 pg_close($dbconn);
 
-$page_title=$place_name." - ".$transport_type_names[$r_type].' №'.$r_ref;
+$page_title=$place_name." - ".$transport_type_names[$r_type].' '.$r_ref;
 $page = 'routes';
 include(TEMPLATE_PATH);
 ?>
