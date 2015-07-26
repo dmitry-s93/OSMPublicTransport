@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS transport_route_master;
 DROP TABLE IF EXISTS transport_stops;
 DROP TABLE IF EXISTS transport_location;
 DROP TABLE IF EXISTS transport_validation;
+DROP TABLE IF EXISTS transport_validation_prev;
 DROP TABLE IF EXISTS statistics_by_region;
 DROP TABLE IF EXISTS statistics_summary;
 
@@ -17,7 +18,7 @@ regions (
 	name text NOT NULL,
 	geom geometry NOT NULL,
 	PRIMARY KEY(id));
-	
+
 CREATE TABLE IF NOT EXISTS
 places (
 	id BIGINT NOT NULL,
@@ -35,7 +36,7 @@ transport_routes (
 	geom GEOMETRY,
 	length DOUBLE PRECISION,
 	PRIMARY KEY(id));
-	
+
 CREATE TABLE IF NOT EXISTS
 transport_route_master (
 	id BIGINT NOT NULL,
@@ -57,9 +58,18 @@ transport_location (
 	region_id BIGINT NOT NULL,
 	place_id BIGINT,
 	route_id BIGINT NOT NULL);
-	
+
 CREATE TABLE IF NOT EXISTS
 transport_validation(
+	region_id BIGINT NOT NULL,
+	routes BIGINT,
+	no_ref BIGINT,
+	no_name BIGINT,
+	no_from_to BIGINT,
+	PRIMARY KEY(region_id));
+
+CREATE TABLE IF NOT EXISTS
+transport_validation_prev(
 	region_id BIGINT NOT NULL,
 	routes BIGINT,
 	no_ref BIGINT,

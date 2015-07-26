@@ -177,6 +177,12 @@ END;
 ------------------------------------------------------------------------
 
 BEGIN;
+	TRUNCATE TABLE transport_validation_prev;
+
+	INSERT INTO transport_validation_prev
+	SELECT *
+	FROM transport_validation;
+
 	TRUNCATE TABLE transport_validation;
 
 	INSERT INTO
@@ -209,7 +215,6 @@ BEGIN;
 			transport_routes.id in (transport_location.route_id)) as routes
 	WHERE
 		regions.id=routes.region_id
-
 	GROUP BY
 		routes.region_id;
 END;
