@@ -149,6 +149,7 @@ function getRouteData(rID) {
 							});
 						},
 						onEachFeature: function (feature, layer) {
+							bindLabel(feature, layer);
 							layer.on('click', function() {
 								loadFeaturePopupData(feature, layer);
 							});
@@ -175,6 +176,7 @@ function getRouteData(rID) {
 							});
 						},
 						onEachFeature: function (feature, layer) {
+							bindLabel(feature, layer)
 							layer.on('click', function() {
 								loadFeaturePopupData(feature, layer);
 							});
@@ -259,6 +261,7 @@ function getData() {
 								});
 							},
 							onEachFeature: function (feature, layer) {
+								bindLabel(feature, layer);
 								layer.on('click', function() {
 									loadFeaturePopupData(feature, layer);
 								});
@@ -284,6 +287,7 @@ function getData() {
 								});
 							},
 							onEachFeature: function (feature, layer) {
+								bindLabel(feature, layer);
 								layer.on('click', function() {
 									loadFeaturePopupData(feature, layer);
 								});
@@ -309,6 +313,7 @@ function getData() {
 								});
 							},
 							onEachFeature: function (feature, layer) {
+								bindLabel(feature, layer);
 								layer.on('click', function() {
 									loadFeaturePopupData(feature, layer);
 								});
@@ -323,6 +328,14 @@ function getData() {
 			document.getElementById("top-message-box").innerHTML = "Приблизьте карту";
 			$('#top-message-box').fadeIn();
 		}
+	}
+}
+
+function bindLabel(feature, layer) {
+	if (feature.properties.name !== '') {
+		layer.bindLabel(feature.properties.name, {
+				direction: 'auto'
+			});
 	}
 }
 
@@ -456,10 +469,18 @@ function createListElements(feature, layer) {
 		if (feature.properties.name == "") {
 			feature.properties.name = "Без названия";
 		}
-		
+
 		if (feature.properties.type == 'platform') {
 			var item = document.getElementById('platform-list').appendChild(document.createElement('li'));
 			item.innerHTML = feature.properties.name;
+			if (feature.geometry.type=='Point') {
+				item.onmouseover = function() {
+					layer.showLabel();
+				};
+				item.onmouseout = function() {
+					layer.hideLabel();
+				};
+			}
 			item.onclick = function() {
 				loadFeaturePopupData(feature, layer);
 			};
@@ -467,6 +488,14 @@ function createListElements(feature, layer) {
 		if (feature.properties.type == 'stop') {
 			var item = document.getElementById('stop-position-list').appendChild(document.createElement('li'));
 			item.innerHTML = feature.properties.name;
+			if (feature.geometry.type=='Point') {
+				item.onmouseover = function() {
+					layer.showLabel();
+				};
+				item.onmouseout = function() {
+					layer.hideLabel();
+				};
+			}
 			item.onclick = function() {
 				loadFeaturePopupData(feature, layer);
 			};
