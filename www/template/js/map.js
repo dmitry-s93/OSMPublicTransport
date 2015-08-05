@@ -423,6 +423,7 @@ var platformsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php
 				fillOpacity: 1
 			});
 			
+			bindLabel(feature, cMarker);
 			cMarker.on('click', function() {
 				loadFeaturePopupData(feature, cMarker);
 			});
@@ -455,6 +456,7 @@ var stationsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php?
 				fillOpacity: 1
 			});
 			
+			bindLabel(feature, cMarker);
 			cMarker.on('click', function() {
 				loadFeaturePopupData(feature, cMarker);
 			});
@@ -487,6 +489,7 @@ var stopsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php?typ
 				fillOpacity: 1
 			});
 			
+			bindLabel(feature, cMarker);
 			cMarker.on('click', function() {
 				loadFeaturePopupData(feature, cMarker);
 			});
