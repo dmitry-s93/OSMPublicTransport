@@ -14,6 +14,7 @@ $output="
 	<script src='template/js/jquery-2.1.4.min.js'></script>
 	<script src='template/js/leaflet.js'></script>
 	<script src='template/js/leaflet.label.js'></script>
+	<script src='template/js/TileLayer.GeoJSON.js'></script>
 	<script src='template/js/Control.FullScreen.js'></script>
 	<script src='template/js/L.Control.Locate.min.js' ></script>
 
