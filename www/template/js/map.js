@@ -493,6 +493,9 @@ var stopsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php?typ
 			cMarker.on('click', function() {
 				loadFeaturePopupData(feature, cMarker);
 			});
+			cMarker.on('add', function() {
+				cMarker.bringToBack();
+			});
 			return cMarker;
 		},
 		onEachFeature: function (feature, layer) {
