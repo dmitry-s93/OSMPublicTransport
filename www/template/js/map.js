@@ -99,9 +99,17 @@ function getRouteData(rID) {
 		RouteLayer.clearLayers();
 		RoutePlatformLayer.clearLayers();
 		RouteStopLayer.clearLayers();
-		//StationLayer.clearLayers();
-		//PlatformLayer.clearLayers();
-		//StopLayer.clearLayers();
+
+		if (map.hasLayer(stopsGeoJsonTileLayer)) {
+			map.removeLayer(stopsGeoJsonTileLayer);
+		}
+		if (map.hasLayer(platformsGeoJsonTileLayer)) {
+			map.removeLayer(platformsGeoJsonTileLayer);
+		}
+		if (map.hasLayer(stationsGeoJsonTileLayer)) {
+			map.removeLayer(stationsGeoJsonTileLayer);
+		}
+		
 		$("#platform-list").empty();
 		$("#stop-position-list").empty();
 		$.ajax({
@@ -406,7 +414,8 @@ var platformsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php
 		clipTiles: false,
 		unique: function (feature) {
 			return feature.id; 
-		}
+		},
+		minZoom: 14
 	}, {
 		style: {
 			"color": "#1E90FF",
@@ -439,7 +448,8 @@ var stationsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php?
 		clipTiles: false,
 		unique: function (feature) {
 			return feature.id; 
-		}
+		},
+		minZoom: 14
 	}, {
 		style: {
 			"color": "#008000",
@@ -472,7 +482,8 @@ var stopsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php?typ
 		clipTiles: false,
 		unique: function (feature) {
 			return feature.id; 
-		}
+		},
+		minZoom: 14
 	}, {
 		style: {
 			"color": "#FFFFFF",
