@@ -413,7 +413,7 @@ var MapSurferLayer   = L.tileLayer(MapSurferUrl, {attribution: MapSurferAttr}),
 var platformsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php?type=platform&x={x}&y={y}&z={z}', {
 		clipTiles: false,
 		unique: function (feature) {
-			return feature.id; 
+			return feature.properties.id;
 		},
 		minZoom: 14
 	}, {
@@ -447,7 +447,7 @@ var platformsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php
 var stationsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php?type=station&x={x}&y={y}&z={z}', {
 		clipTiles: false,
 		unique: function (feature) {
-			return feature.id; 
+			return feature.properties.id;
 		},
 		minZoom: 14
 	}, {
@@ -481,7 +481,7 @@ var stationsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php?
 var stopsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php?type=stop_pos&x={x}&y={y}&z={z}', {
 		clipTiles: false,
 		unique: function (feature) {
-			return feature.id; 
+			return feature.properties.id;
 		},
 		minZoom: 14
 	}, {

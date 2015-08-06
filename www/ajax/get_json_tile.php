@@ -79,7 +79,9 @@ $sql_query=pg_query("
 	ON (transport_stops.id = stop_area.member_id)
 	WHERE
 		(".$condition.") and
-		ST_Contains(ST_SetSRID(ST_MakeBox2D(ST_Point(".$point1."), ST_Point(".$point2.")), 4326), geom)
+		(( ST_Contains(ST_SetSRID(ST_MakeBox2D(ST_Point(".$point1."), ST_Point(".$point2.")), 4326), geom) )
+			OR
+		( ST_Intersects(ST_SetSRID(ST_MakeBox2D(ST_Point(".$point1."), ST_Point(".$point2.")), 4326), geom) ))
 	LIMIT
 		150
 ");
