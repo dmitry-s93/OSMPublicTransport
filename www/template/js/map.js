@@ -208,6 +208,13 @@ function getRouteData(rID) {
 	}
 }
 
+function checkZoom() {
+	if (map.getZoom() < 14) {
+		document.getElementById("top-message-box").innerHTML = "Приблизьте карту";
+		$('#top-message-box').fadeIn();
+	}
+}
+
 function bindLabel(feature, layer) {
 	if (feature.properties.name !== '') {
 		layer.bindLabel(feature.properties.name, {
@@ -573,7 +580,26 @@ var topMessage = L.Control.extend({
 
 map.addControl(new topMessage());
 
+checkZoom();
+
 map.addLayer(platformsGeoJsonTileLayer);
+
+var loading_layers = [ stationsGeoJsonTileLayer, platformsGeoJsonTileLayer, stopsGeoJsonTileLayer ];
+
+loading_layers.forEach(function(element, index, array) {	
+	element.on('loading', function() {
+		document.getElementById("top-message-box").innerHTML = "Загрузка";
+		$('#top-message-box').fadeIn();
+	});
+	element.on('load', function() {
+		var is_completed = array.reduce(function(prev, cur) {
+			var tilesToLoad = cur._tilesToLoad || 0;
+			return prev && (tilesToLoad < 1);
+		}, true);
+		if(is_completed)
+			$('#top-message-box').fadeOut();
+	});
+});
 
 setBaselayer();
 
@@ -584,3 +610,4 @@ map.on('overlayadd', function () {
 	setLayersOrder();
 });
 map.on('moveend', setMapURL);
+map.on('zoomend', checkZoom);
