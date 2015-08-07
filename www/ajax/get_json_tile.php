@@ -87,29 +87,28 @@ $sql_query=pg_query("
 ");
 
 function geoJsonEncode($query) {
-	$resultString = "{\"type\":\"FeatureCollection\", \"features\": [";
+	$geojson = array(
+		"type" => "FeatureCollection",
+		"features" => array()
+	);
+	
 	if (pg_num_rows($query) > 0) {
-		$geoObjects = array();
 		while ($row = pg_fetch_assoc($query)) {
 			if ($row['geom'] != "") {
-				$geoObjects[] ="
-					{
-						\"type\": \"Feature\",
-						\"properties\": {
-							\"id\": \"".$row['id']."\",
-							\"type\": \"".$row['type']."\",
-							\"name\": \"".addslashes($row['name'])."\"
-						},
-						\"geometry\": ".$row['geom']."
-					}";
+				$geojson['features'][] = array(
+					"type" => "Feature",
+					"properties" => array(
+						"id" => $row['id'],
+						"type" => $row['type'],
+						"name" => addslashes($row['name'])
+					),
+					"geometry" => json_decode($row['geom'], true)
+				);
 			}
 		}
-		
-		$resultString .= implode(",", $geoObjects);
 	}
-	$resultString .= "]}";
 		
-	return $resultString;
+	return json_encode($geojson);
 }
 
 $output = geoJsonEncode($sql_query);
