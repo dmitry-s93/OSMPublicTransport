@@ -30,10 +30,9 @@ function parseURL() {
 }
 
 function setMapURL() {
+	var urlRouteID = '';
 	if (RouteID !== '') {
-		var urlRouteID = '&route='+RouteID;
-	} else {
-		var urlRouteID = '';
+		urlRouteID = '&route='+RouteID;
 	}
 	MapUrl= '#map='+map.getZoom()+'/'+map.getCenter().lat.toFixed(4)+'/'+map.getCenter().lng.toFixed(4)+'&layer='+MapBaseLayer+urlRouteID;
 	location.replace(MapUrl);
@@ -85,8 +84,9 @@ function clearRouteLayer() {
 
 	$('#left_panel').hide();
 	map.invalidateSize();
-	//getData();
 	setMapURL();
+	
+	checkZoom();
 }
 
 var RouteLayer = new L.FeatureGroup();
@@ -210,8 +210,16 @@ function getRouteData(rID) {
 
 function checkZoom() {
 	if (map.getZoom() < 14) {
-		document.getElementById("top-message-box").innerHTML = "Приблизьте карту";
-		$('#top-message-box').fadeIn();
+		if(!RouteID) {
+			document.getElementById("top-message-box").innerHTML = "Приблизьте карту";
+			$('#top-message-box').fadeIn();
+		}
+	}
+	else {
+		//when all overlays are disabled
+		if($("#top-message-box").text()==="Приблизьте карту") {
+			$('#top-message-box').fadeOut();
+		}
 	}
 }
 
