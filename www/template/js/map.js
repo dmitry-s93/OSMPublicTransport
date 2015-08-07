@@ -339,21 +339,12 @@ function bindRoutePopup(feature, layer) {
 }
 
 function createRouteInfo(feature) {
-	var contentPanel = document.getElementById('left_panel_content');
-	contentPanel.innerHTML =
-		'<div id="content_header"> \n\
-			<div align="center"><a href="#" onclick="clearRouteLayer(); return false;">Закрыть маршрут</a><hr></div> \n\
-			' + feature.properties.type + ' ' +  feature.properties.ref + '<br> \n\
-			Протяженность: ' + feature.properties.length +' км.<hr> \n\
-		</div> \n\
-		<form action="" align="center"> \n\
-				<select id="SelectList" onchange="SetList()"> \n\
-					<option value="platform"> Остановки / платформы </option> \n\
-					<option value="stop_position"> Места остановок </option> \n\
-				</select> \n\
-		</form> \n\
-		<ol id="platform-list" class="marker-list"></ol> \n\
-		<ol id="stop-position-list" class="marker-list" style="display: none;"></ol>';
+	var template = _.template($('#route_info_template').html());
+	$('#left_panel_content').html(template({
+		'type' : feature.properties.type,
+		'ref': feature.properties.ref,
+		'length': feature.properties.length
+	}));
 }
 
 function createListElements(feature, layer) {
