@@ -417,7 +417,7 @@ var MapSurferLayer   = L.tileLayer(MapSurferUrl, {attribution: MapSurferAttr}),
 	MapnikLayer  = L.tileLayer(MapnikUrl, {attribution: MapnikAttr}),
 	PTLayer = L.tileLayer(PTUrl, {attribution: PTAttr});
 
-var platformsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php?type=platform&x={x}&y={y}&z={z}', {
+var platformsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/platform/{z}/{x}/{y}.geojson', {
 		clipTiles: false,
 		unique: function (feature) {
 			return feature.properties.id;
@@ -451,7 +451,7 @@ var platformsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php
 	}
 );
 
-var stationsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php?type=station&x={x}&y={y}&z={z}', {
+var stationsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/station/{z}/{x}/{y}.geojson', {
 		clipTiles: false,
 		unique: function (feature) {
 			return feature.properties.id;
@@ -485,7 +485,7 @@ var stationsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php?
 	}
 );
 
-var stopsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/ajax/get_json_tile.php?type=stop_pos&x={x}&y={y}&z={z}', {
+var stopsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/stop_pos/{z}/{x}/{y}.geojson', {
 		clipTiles: false,
 		unique: function (feature) {
 			return feature.properties.id;
