@@ -30,10 +30,9 @@ function parseURL() {
 }
 
 function setMapURL() {
+	var urlRouteID = '';
 	if (RouteID !== '') {
-		var urlRouteID = '&route='+RouteID;
-	} else {
-		var urlRouteID = '';
+		urlRouteID = '&route='+RouteID;
 	}
 	MapUrl= '#map='+map.getZoom()+'/'+map.getCenter().lat.toFixed(4)+'/'+map.getCenter().lng.toFixed(4)+'&layer='+MapBaseLayer+urlRouteID;
 	location.replace(MapUrl);
@@ -65,14 +64,14 @@ function setBaselayer() {
 }
 
 function setLayersOrder() {
-	if (map.hasLayer(StopLayer)) {
-		StopLayer.bringToFront();
+	if (map.hasLayer(stopsGeoJsonTileLayer)) {
+		stopsGeoJsonTileLayer.bringToFront();
 	}
-	if (map.hasLayer(PlatformLayer)) {
-		PlatformLayer.bringToFront();
+	if (map.hasLayer(platformsGeoJsonTileLayer)) {
+		platformsGeoJsonTileLayer.bringToFront();
 	}
-	if (map.hasLayer(StationLayer)) {
-		StationLayer.bringToFront();
+	if (map.hasLayer(stationsGeoJsonTileLayer)) {
+		stationsGeoJsonTileLayer.bringToFront();
 	}
 }
 
@@ -85,17 +84,14 @@ function clearRouteLayer() {
 
 	$('#left_panel').hide();
 	map.invalidateSize();
-	getData();
 	setMapURL();
+	
+	checkZoom();
 }
 
 var RouteLayer = new L.FeatureGroup();
 var RoutePlatformLayer = new L.FeatureGroup();
 var RouteStopLayer = new L.FeatureGroup();
-
-var StationLayer = new L.FeatureGroup();
-var PlatformLayer = new L.FeatureGroup();
-var StopLayer = new L.FeatureGroup();
 
 function getRouteData(rID) {
 	if (rID !== '') {
@@ -103,9 +99,17 @@ function getRouteData(rID) {
 		RouteLayer.clearLayers();
 		RoutePlatformLayer.clearLayers();
 		RouteStopLayer.clearLayers();
-		StationLayer.clearLayers();
-		PlatformLayer.clearLayers();
-		StopLayer.clearLayers();
+
+		if (map.hasLayer(stopsGeoJsonTileLayer)) {
+			map.removeLayer(stopsGeoJsonTileLayer);
+		}
+		if (map.hasLayer(platformsGeoJsonTileLayer)) {
+			map.removeLayer(platformsGeoJsonTileLayer);
+		}
+		if (map.hasLayer(stationsGeoJsonTileLayer)) {
+			map.removeLayer(stationsGeoJsonTileLayer);
+		}
+		
 		$("#platform-list").empty();
 		$("#stop-position-list").empty();
 		$.ajax({
@@ -204,129 +208,17 @@ function getRouteData(rID) {
 	}
 }
 
-function getData() {
-	if (RouteID == '') {
-		StationLayer.clearLayers();
-		PlatformLayer.clearLayers();
-		StopLayer.clearLayers();
-		if (map.getZoom() > 14) {
-			document.getElementById("top-message-box").innerHTML = "Загрузка";
-			$('#top-message-box').fadeIn();
-
-			if (map.hasLayer(StationLayer)) {
-				getStations = true;
-			} else {
-				getStations = false;
-			}
-			if (map.hasLayer(PlatformLayer)) {
-				getPlatforms = true;
-			} else {
-				getPlatforms = false;
-			}
-			if (map.hasLayer(StopLayer)) {
-				getStops = true;
-			} else {
-				getStops = false;
-			}
-
-			var bbox = map.getBounds();
-			$.ajax({
-				type: "POST",
-				url: "/ajax/get_data.php",
-				data: {
-					point1: (bbox._southWest.lng)+","+(bbox._southWest.lat),
-					point2: (bbox._northEast.lng)+","+(bbox._northEast.lat),
-					station: getStations,
-					platform: getPlatforms,
-					stop_pos: getStops
-				},
-				dataType: "script",
-				async: true,
-				success: function(data){
-					if (typeof geojson_stop_positions !== "undefined") {
-						L.geoJson(geojson_stop_positions, {
-							style: {
-								"color": "#FFFFFF",
-								"weight": 1,
-								"opacity": 1
-							},
-							pointToLayer: function (feature, latlng) {
-								return L.circleMarker(latlng, {
-									radius: 6,
-									fillColor: "#1E90FF",
-									color: "#000",
-									weight: 2,
-									opacity: 1,
-									fillOpacity: 1
-								});
-							},
-							onEachFeature: function (feature, layer) {
-								bindLabel(feature, layer);
-								layer.on('click', function() {
-									loadFeaturePopupData(feature, layer);
-								});
-							}
-						}).addTo(StopLayer);
-						delete geojson_stop_positions;
-					}
-					if (typeof geojson_platforms !== "undefined") {
-						L.geoJson(geojson_platforms, {
-							style: {
-								"color": "#1E90FF",
-								"weight": 2,
-								"opacity": 1
-							},
-							pointToLayer: function (feature, latlng) {
-								return L.circleMarker(latlng, {
-									radius: 6,
-									fillColor: "#FFFFFF",
-									color: "#000",
-									weight: 1,
-									opacity: 1,
-									fillOpacity: 1
-								});
-							},
-							onEachFeature: function (feature, layer) {
-								bindLabel(feature, layer);
-								layer.on('click', function() {
-									loadFeaturePopupData(feature, layer);
-								});
-							}
-						}).addTo(PlatformLayer);
-						delete geojson_platforms;
-					}
-					if (typeof geojson_stations !== "undefined") {
-						L.geoJson(geojson_stations, {
-							style: {
-								"color": "#008000",
-								"weight": 3,
-								"opacity": 1
-							},
-							pointToLayer: function (feature, latlng) {
-								return L.circleMarker(latlng, {
-									radius: 8,
-									fillColor: "#FFFFFF",
-									color: "#000",
-									weight: 1,
-									opacity: 1,
-									fillOpacity: 1
-								});
-							},
-							onEachFeature: function (feature, layer) {
-								bindLabel(feature, layer);
-								layer.on('click', function() {
-									loadFeaturePopupData(feature, layer);
-								});
-							}
-						}).addTo(StationLayer);
-						delete geojson_stations;
-					}
-				}
-			});
-			$('#top-message-box').fadeOut();
-		} else {
+function checkZoom() {
+	if (map.getZoom() < 14) {
+		if(!RouteID) {
 			document.getElementById("top-message-box").innerHTML = "Приблизьте карту";
 			$('#top-message-box').fadeIn();
+		}
+	}
+	else {
+		//when all overlays are disabled
+		if($("#top-message-box").text()==="Приблизьте карту") {
+			$('#top-message-box').fadeOut();
 		}
 	}
 }
@@ -447,21 +339,12 @@ function bindRoutePopup(feature, layer) {
 }
 
 function createRouteInfo(feature) {
-	var contentPanel = document.getElementById('left_panel_content');
-	contentPanel.innerHTML =
-		'<div id="content_header"> \n\
-			<div align="center"><a href="#" onclick="clearRouteLayer(); return false;">Закрыть маршрут</a><hr></div> \n\
-			' + feature.properties.type + ' ' +  feature.properties.ref + '<br> \n\
-			Протяженность: ' + feature.properties.length +' км.<hr> \n\
-		</div> \n\
-		<form action="" align="center"> \n\
-				<select id="SelectList" onchange="SetList()"> \n\
-					<option value="platform"> Остановки / платформы </option> \n\
-					<option value="stop_position"> Места остановок </option> \n\
-				</select> \n\
-		</form> \n\
-		<ol id="platform-list" class="marker-list"></ol> \n\
-		<ol id="stop-position-list" class="marker-list" style="display: none;"></ol>';
+	var template = _.template($('#route_info_template').html());
+	$('#left_panel_content').html(template({
+		'type' : feature.properties.type,
+		'ref': feature.properties.ref,
+		'length': feature.properties.length
+	}));
 }
 
 function createListElements(feature, layer) {
@@ -533,6 +416,111 @@ var MapSurferLayer   = L.tileLayer(MapSurferUrl, {attribution: MapSurferAttr}),
 	MapnikLayer  = L.tileLayer(MapnikUrl, {attribution: MapnikAttr}),
 	PTLayer = L.tileLayer(PTUrl, {attribution: PTAttr});
 
+var platformsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/platform/{z}/{x}/{y}.geojson', {
+		clipTiles: false,
+		unique: function (feature) {
+			return feature.properties.id;
+		},
+		minZoom: 14
+	}, {
+		style: {
+			"color": "#1E90FF",
+			"weight": 2,
+			"opacity": 1
+		},
+		pointToLayer: function (feature, latlng) {
+			var cMarker = L.circleMarker(latlng, {
+				radius: 6,
+				fillColor: "#FFFFFF",
+				color: "#000",
+				weight: 1,
+				opacity: 1,
+				fillOpacity: 1
+			});
+			
+			bindLabel(feature, cMarker);
+			cMarker.on('click', function() {
+				loadFeaturePopupData(feature, cMarker);
+			});
+			return cMarker;
+		},
+		onEachFeature: function (feature, layer) {
+			//
+		}
+	}
+);
+
+var stationsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/station/{z}/{x}/{y}.geojson', {
+		clipTiles: false,
+		unique: function (feature) {
+			return feature.properties.id;
+		},
+		minZoom: 14
+	}, {
+		style: {
+			"color": "#008000",
+			"weight": 3,
+			"opacity": 1
+		},
+		pointToLayer: function (feature, latlng) {
+			var cMarker = L.circleMarker(latlng, {
+				radius: 8,
+				fillColor: "#FFFFFF",
+				color: "#000",
+				weight: 1,
+				opacity: 1,
+				fillOpacity: 1
+			});
+			
+			bindLabel(feature, cMarker);
+			cMarker.on('click', function() {
+				loadFeaturePopupData(feature, cMarker);
+			});
+			return cMarker;
+		},
+		onEachFeature: function (feature, layer) {
+			//
+		}
+	}
+);
+
+var stopsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/stop_pos/{z}/{x}/{y}.geojson', {
+		clipTiles: false,
+		unique: function (feature) {
+			return feature.properties.id;
+		},
+		minZoom: 14
+	}, {
+		style: {
+			"color": "#FFFFFF",
+			"weight": 1,
+			"opacity": 1
+		},
+		pointToLayer: function (feature, latlng) {
+			var cMarker = L.circleMarker(latlng, {
+				radius: 6,
+				fillColor: "#1E90FF",
+				color: "#000",
+				weight: 2,
+				opacity: 1,
+				fillOpacity: 1
+			});
+			
+			bindLabel(feature, cMarker);
+			cMarker.on('click', function() {
+				loadFeaturePopupData(feature, cMarker);
+			});
+			cMarker.on('add', function() {
+				cMarker.bringToBack();
+			});
+			return cMarker;
+		},
+		onEachFeature: function (feature, layer) {
+			//
+		}
+	}
+);
+
 var baseLayers = {
 	"MapSurfer": MapSurferLayer,
 	"sputnik.ru": SputnikRuLayer,
@@ -541,9 +529,9 @@ var baseLayers = {
 
 var overlays = {
 	"Слой маршрутов": PTLayer,
-	"Станции": StationLayer,
-	"Остановки / платформы": PlatformLayer,
-	"Места остановок": StopLayer,
+	"Станции": stationsGeoJsonTileLayer,
+	"Остановки / платформы": platformsGeoJsonTileLayer,
+	"Места остановок": stopsGeoJsonTileLayer,
 };
 
 parseURL();
@@ -591,19 +579,34 @@ var topMessage = L.Control.extend({
 
 map.addControl(new topMessage());
 
-map.addLayer(PlatformLayer);
-map.addLayer(StationLayer);
+checkZoom();
+
+map.addLayer(platformsGeoJsonTileLayer);
+
+var loading_layers = [ stationsGeoJsonTileLayer, platformsGeoJsonTileLayer, stopsGeoJsonTileLayer ];
+
+loading_layers.forEach(function(element, index, array) {	
+	element.on('loading', function() {
+		document.getElementById("top-message-box").innerHTML = "Загрузка";
+		$('#top-message-box').fadeIn();
+	});
+	element.on('load', function() {
+		var is_completed = array.reduce(function(prev, cur) {
+			var tilesToLoad = cur._tilesToLoad || 0;
+			return prev && (tilesToLoad < 1);
+		}, true);
+		if(is_completed)
+			$('#top-message-box').fadeOut();
+	});
+});
 
 setBaselayer();
-getData();
 
 getRouteData(RouteID);
 
 map.on('baselayerchange', onBaselayerChange);
 map.on('overlayadd', function () {
-	getData();
 	setLayersOrder();
 });
 map.on('moveend', setMapURL);
-map.on('dragend', getData);
-map.on('zoomend', getData);
+map.on('zoomend', checkZoom);
