@@ -85,7 +85,7 @@ function clearRouteLayer() {
 	$('#left_panel').hide();
 	map.invalidateSize();
 	setMapURL();
-	
+
 	checkZoom();
 }
 
@@ -109,7 +109,7 @@ function getRouteData(rID) {
 		if (map.hasLayer(stationsGeoJsonTileLayer)) {
 			map.removeLayer(stationsGeoJsonTileLayer);
 		}
-		
+
 		$("#platform-list").empty();
 		$("#stop-position-list").empty();
 		$.ajax({
@@ -437,15 +437,13 @@ var platformsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/platform/{z}/{x}/{y}.g
 				opacity: 1,
 				fillOpacity: 1
 			});
-			
-			bindLabel(feature, cMarker);
-			cMarker.on('click', function() {
-				loadFeaturePopupData(feature, cMarker);
-			});
 			return cMarker;
 		},
 		onEachFeature: function (feature, layer) {
-			//
+			bindLabel(feature, layer);
+			layer.on('click', function() {
+				loadFeaturePopupData(feature, layer);
+			});
 		}
 	}
 );
@@ -471,15 +469,13 @@ var stationsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/station/{z}/{x}/{y}.geo
 				opacity: 1,
 				fillOpacity: 1
 			});
-			
-			bindLabel(feature, cMarker);
-			cMarker.on('click', function() {
-				loadFeaturePopupData(feature, cMarker);
-			});
 			return cMarker;
 		},
 		onEachFeature: function (feature, layer) {
-			//
+			bindLabel(feature, layer);
+			layer.on('click', function() {
+				loadFeaturePopupData(feature, layer);
+			});
 		}
 	}
 );
@@ -505,7 +501,7 @@ var stopsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/stop_pos/{z}/{x}/{y}.geojs
 				opacity: 1,
 				fillOpacity: 1
 			});
-			
+
 			bindLabel(feature, cMarker);
 			cMarker.on('click', function() {
 				loadFeaturePopupData(feature, cMarker);
@@ -514,9 +510,6 @@ var stopsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/stop_pos/{z}/{x}/{y}.geojs
 				cMarker.bringToBack();
 			});
 			return cMarker;
-		},
-		onEachFeature: function (feature, layer) {
-			//
 		}
 	}
 );
@@ -585,7 +578,7 @@ map.addLayer(platformsGeoJsonTileLayer);
 
 var loading_layers = [ stationsGeoJsonTileLayer, platformsGeoJsonTileLayer, stopsGeoJsonTileLayer ];
 
-loading_layers.forEach(function(element, index, array) {	
+loading_layers.forEach(function(element, index, array) {
 	element.on('loading', function() {
 		document.getElementById("top-message-box").innerHTML = "Загрузка";
 		$('#top-message-box').fadeIn();
