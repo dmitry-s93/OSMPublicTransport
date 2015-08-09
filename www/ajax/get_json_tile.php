@@ -81,7 +81,7 @@ $sql_query=pg_query("
 		(".$condition.") and
 		(( ST_Contains(ST_SetSRID(ST_MakeBox2D(ST_Point(".$point1."), ST_Point(".$point2.")), 4326), geom) )
 			OR
-		( ST_Intersects(ST_SetSRID(ST_MakeBox2D(ST_Point(".$point1."), ST_Point(".$point2.")), 4326), geom) ))
+		( ST_Contains(ST_SetSRID(ST_MakeBox2D(ST_Point(".$point1."), ST_Point(".$point2.")), 4326), geom_center) ))
 	LIMIT
 		150
 ");
@@ -91,7 +91,7 @@ function geoJsonEncode($query) {
 		"type" => "FeatureCollection",
 		"features" => array()
 	);
-	
+
 	if (pg_num_rows($query) > 0) {
 		while ($row = pg_fetch_assoc($query)) {
 			if ($row['geom'] != "") {
@@ -107,7 +107,7 @@ function geoJsonEncode($query) {
 			}
 		}
 	}
-		
+
 	return json_encode($geojson);
 }
 
