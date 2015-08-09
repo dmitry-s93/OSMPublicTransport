@@ -82,12 +82,13 @@ BEGIN;
 		tags->'railway' in ('stop', 'tram_stop','halt','station');
 
 	-- Линии и полигоны
-	INSERT INTO transport_stops (id,tstamp,tags,geom)
+	INSERT INTO transport_stops (id,tstamp,tags,geom,geom_center)
 	SELECT
 		stops.id,
 		ways.tstamp,
 		ways.tags,
-		stops.geom
+		stops.geom,
+		ST_Centroid(stops.geom) as geom_center
 	FROM
 		ways,
 		(SELECT
