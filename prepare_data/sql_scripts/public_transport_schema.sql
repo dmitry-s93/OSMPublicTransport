@@ -51,6 +51,7 @@ transport_stops (
 	tstamp timestamp NOT NULL,
 	tags HSTORE NOT NULL,
 	geom GEOMETRY NOT NULL,
+	geom_center GEOMETRY,
 	PRIMARY KEY(id));
 
 CREATE TABLE IF NOT EXISTS
