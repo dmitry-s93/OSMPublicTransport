@@ -24,6 +24,11 @@ sudo apt-get install apache2 php5
 sudo a2ensite osm-public-transport.conf
 ```
 
+Включаем mod_rewrite:
+```
+sudo a2enmod rewrite
+```
+
 Перезапускаем Apache:
 ```
 sudo service apache2 restart
