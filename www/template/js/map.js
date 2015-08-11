@@ -1,3 +1,8 @@
+var MapBaseLayer;
+var MapOverlays;
+var MapOverlaysTmp;
+var RouteID;
+
 function parseURL() {
 	if (document.location.hash == '') {
 		if (document.cookie.substr(19) !== '') {
@@ -22,6 +27,11 @@ function parseURL() {
 	} else {
 		MapBaseLayer = 'S';
 	}
+	if ('url_overlays' in param) {
+		MapOverlays = param['url_overlays'];
+	} else {
+		MapOverlays = 'P';
+	}
 	if ('url_route' in param) {
 		RouteID = param['url_route'];
 	} else {
@@ -31,10 +41,14 @@ function parseURL() {
 
 function setMapURL() {
 	var urlRouteID = '';
+	var urlMapOverlays = '';
 	if (RouteID !== '') {
 		urlRouteID = '&route='+RouteID;
 	}
-	MapUrl= '#map='+map.getZoom()+'/'+map.getCenter().lat.toFixed(4)+'/'+map.getCenter().lng.toFixed(4)+'&layer='+MapBaseLayer+urlRouteID;
+	if (MapOverlays !== '') {
+		urlMapOverlays = '&overlays='+MapOverlays;
+	}
+	MapUrl= '#map='+map.getZoom()+'/'+map.getCenter().lat.toFixed(4)+'/'+map.getCenter().lng.toFixed(4)+'&layer='+MapBaseLayer+urlMapOverlays+urlRouteID;
 	location.replace(MapUrl);
 	var date = new Date(new Date().getTime() + 3600 * 1000 * 24 * 365);
 	document.cookie = "OSMPublicTransport="+MapUrl+"; path=/; expires=" + date.toUTCString() + ";";
@@ -60,7 +74,38 @@ function setBaselayer() {
 		case 'K': map.addLayer(SputnikRuLayer); break;
 		case 'M': map.addLayer(MapnikLayer); break;
 	}
+}
+
+function onOverlayChange() {
+	MapOverlays = '';
+	if (map.hasLayer(PTLayer) == true) MapOverlays +='T';
+	if (map.hasLayer(stationsGeoJsonTileLayer) == true) MapOverlays +='N';
+	if (map.hasLayer(platformsGeoJsonTileLayer) == true) MapOverlays +='P';
+	if (map.hasLayer(stopsGeoJsonTileLayer) == true) MapOverlays +='S';
 	setMapURL();
+}
+
+function setOverlays(OverlaysStr) {
+	if (OverlaysStr.indexOf('T') + 1) {
+		map.addLayer(PTLayer);
+	} else {
+		map.removeLayer(PTLayer);
+	}
+	if (OverlaysStr.indexOf('N') + 1) {
+		map.addLayer(stationsGeoJsonTileLayer);
+	} else {
+		map.removeLayer(stationsGeoJsonTileLayer);
+	}
+	if (OverlaysStr.indexOf('P') + 1) {
+		map.addLayer(platformsGeoJsonTileLayer);
+	} else {
+		map.removeLayer(platformsGeoJsonTileLayer);
+	}
+	if (OverlaysStr.indexOf('S') + 1) {
+		map.addLayer(stopsGeoJsonTileLayer);
+	} else {
+		map.removeLayer(stopsGeoJsonTileLayer);
+	}
 }
 
 function setLayersOrder() {
@@ -84,6 +129,8 @@ function clearRouteLayer() {
 
 	$('#left_panel').hide();
 	map.invalidateSize();
+
+	setOverlays(MapOverlaysTmp);
 	setMapURL();
 
 	checkZoom();
@@ -100,15 +147,10 @@ function getRouteData(rID) {
 		RoutePlatformLayer.clearLayers();
 		RouteStopLayer.clearLayers();
 
-		if (map.hasLayer(stopsGeoJsonTileLayer)) {
-			map.removeLayer(stopsGeoJsonTileLayer);
-		}
-		if (map.hasLayer(platformsGeoJsonTileLayer)) {
-			map.removeLayer(platformsGeoJsonTileLayer);
-		}
-		if (map.hasLayer(stationsGeoJsonTileLayer)) {
-			map.removeLayer(stationsGeoJsonTileLayer);
-		}
+		MapOverlaysTmp = MapOverlays;
+		MapOverlays = '';
+		setOverlays(MapOverlays);
+		setMapURL();
 
 		$("#platform-list").empty();
 		$("#stop-position-list").empty();
@@ -574,7 +616,7 @@ map.addControl(new topMessage());
 
 checkZoom();
 
-map.addLayer(platformsGeoJsonTileLayer);
+//map.addLayer(platformsGeoJsonTileLayer);
 
 var loading_layers = [ stationsGeoJsonTileLayer, platformsGeoJsonTileLayer, stopsGeoJsonTileLayer ];
 
@@ -594,12 +636,17 @@ loading_layers.forEach(function(element, index, array) {
 });
 
 setBaselayer();
+setOverlays(MapOverlays);
 
 getRouteData(RouteID);
 
 map.on('baselayerchange', onBaselayerChange);
 map.on('overlayadd', function () {
 	setLayersOrder();
+	onOverlayChange();
+});
+map.on('overlayremove', function () {
+	onOverlayChange();
 });
 map.on('moveend', setMapURL);
 map.on('zoomend', checkZoom);
