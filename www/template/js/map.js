@@ -616,8 +616,6 @@ map.addControl(new topMessage());
 
 checkZoom();
 
-//map.addLayer(platformsGeoJsonTileLayer);
-
 var loading_layers = [ stationsGeoJsonTileLayer, platformsGeoJsonTileLayer, stopsGeoJsonTileLayer ];
 
 loading_layers.forEach(function(element, index, array) {
