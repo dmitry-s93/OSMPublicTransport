@@ -78,8 +78,8 @@ p {
 	padding:0px 10px;
 }
 
-pre {
-	font-size: 11pt;
+ol.route_info {
+	margin-left: 15px;
 }
 
 .shadowtext {

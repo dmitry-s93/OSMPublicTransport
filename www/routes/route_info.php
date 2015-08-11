@@ -143,19 +143,18 @@ while ($row = pg_fetch_assoc($sql_route)){
 				relation_members.sequence_id;
 		");
 
-		$output.="<pre>";
+		$output.="<ol class='route_info'>";
 
-		$i=1;
 		if (pg_num_rows($sql_stop)>pg_num_rows($sql_platform)) {
 			while ($row_stop = pg_fetch_assoc($sql_stop)){
-				$output.="&#9;".$i++ .". ". $row_stop['name'] . "<br>";
+				$output.="<li>" . $row_stop['name'] . "</li>";
 			}
 		} else {
 			while ($row_stop = pg_fetch_assoc($sql_platform)){
-				$output=$output."&#9;".$i++ .". ". $row_stop['name'] . "<br>";
+				$output=$output."<li>" . $row_stop['name'] . "</li>";
 			}
 		}
-		$output.="</pre>";
+		$output.="</ol>";
 
 	} else {
 		//Old version
@@ -176,20 +175,20 @@ while ($row = pg_fetch_assoc($sql_route)){
 		ORDER BY platform_order
 		");
 
-		$i=1; $j=1; $forward=''; $backward='';
+		$forward=''; $backward='';
 		while ($row_stop = pg_fetch_assoc($sql_stop)){
 			if ($row_stop['role']=="forward:stop") {
-				$forward=$forward."&#9;".$i++ .". ". $row_stop['name'] . "<br>";
+				$forward=$forward."<li>". $row_stop['name'] . "</li>";
 			}
 			if ($row_stop['role']=="backward:stop") {
-				$backward=$backward."&#9;".$j++ .". ". $row_stop['name'] . "<br>";
+				$backward=$backward."<li>". $row_stop['name'] . "</li>";
 			}
 		}
 
 		$output.="<p><b><a href='http://openstreetmap.org/relation/".$row['id']."'>".$transport_type_names[$r_type]." ".$row['ref']."</a>: прямой маршрут</b><br></p>";
-		$output.="<pre>".$forward."</pre>";
+		$output.="<ol class='route_info'>".$forward."</ol>";
 		$output.="<p><b><a href='http://openstreetmap.org/relation/".$row['id']."'>".$transport_type_names[$r_type]." ".$row['ref']."</a>: обратный маршрут</b><br></p>";
-		$output.="<pre>".$backward."</pre>";
+		$output.="<ol class='route_info'>".$backward."</ol>";
 
 		$output.="<p><font color=#FF0000>Внимание! Маршрут выполнен по старой схеме. Некоторая информация может быть недоступна.</font></p>";
 
