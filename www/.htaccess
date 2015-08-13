@@ -2,4 +2,6 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.php -f
 RewriteRule ^(.*)$ $1.php
+# if file doesnt exist in cache then redirect to script
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([A-Za-z_]+)/([0-9]+)/([0-9]+)/([0-9]+)\.geojson$ /ajax/get_json_tile.php?type=$1&x=$3&y=$4&z=$2
