@@ -10,8 +10,8 @@ DROP TABLE IF EXISTS transport_validation_prev;
 DROP TABLE IF EXISTS statistics_by_region;
 DROP TABLE IF EXISTS statistics_summary;
 
-CREATE TABLE IF NOT EXISTS
-regions (
+-- Create tables
+CREATE TABLE regions (
 	id BIGINT NOT NULL,
 	iso3166 text,
 	federal_district text NOT NULL,
@@ -19,8 +19,7 @@ regions (
 	geom geometry NOT NULL,
 	PRIMARY KEY(id));
 
-CREATE TABLE IF NOT EXISTS
-places (
+CREATE TABLE places (
 	id BIGINT NOT NULL,
 	region_id BIGINT NOT NULL,
 	type text NOT NULL,
@@ -28,8 +27,7 @@ places (
 	geom geometry NOT NULL,
 	PRIMARY KEY(id));
 
-CREATE TABLE IF NOT EXISTS
-transport_routes (
+CREATE TABLE transport_routes (
 	id BIGINT NOT NULL,
 	tstamp timestamp NOT NULL,
 	tags HSTORE NOT NULL,
@@ -37,16 +35,14 @@ transport_routes (
 	length DOUBLE PRECISION,
 	PRIMARY KEY(id));
 
-CREATE TABLE IF NOT EXISTS
-transport_route_master (
+CREATE TABLE transport_route_master (
 	id BIGINT NOT NULL,
 	tstamp timestamp NOT NULL,
 	tags HSTORE NOT NULL,
 	routes BIGINT[] NOT NULL,
 	PRIMARY KEY(id));
 
-CREATE TABLE IF NOT EXISTS
-transport_stops (
+CREATE TABLE transport_stops (
 	id BIGINT NOT NULL,
 	tstamp timestamp NOT NULL,
 	tags HSTORE NOT NULL,
@@ -54,14 +50,12 @@ transport_stops (
 	geom_center GEOMETRY,
 	PRIMARY KEY(id));
 
-CREATE TABLE IF NOT EXISTS
-transport_location (
+CREATE TABLE transport_location (
 	region_id BIGINT NOT NULL,
 	place_id BIGINT,
 	route_id BIGINT NOT NULL);
 
-CREATE TABLE IF NOT EXISTS
-transport_validation(
+CREATE TABLE transport_validation(
 	region_id BIGINT NOT NULL,
 	routes BIGINT,
 	no_ref BIGINT,
@@ -69,8 +63,7 @@ transport_validation(
 	no_from_to BIGINT,
 	PRIMARY KEY(region_id));
 
-CREATE TABLE IF NOT EXISTS
-transport_validation_prev(
+CREATE TABLE transport_validation_prev(
 	region_id BIGINT NOT NULL,
 	routes BIGINT,
 	no_ref BIGINT,
@@ -78,8 +71,7 @@ transport_validation_prev(
 	no_from_to BIGINT,
 	PRIMARY KEY(region_id));
 
-CREATE TABLE IF NOT EXISTS
-statistics_by_region(
+CREATE TABLE statistics_by_region(
 	tstamp timestamp NOT NULL,
 	region_id BIGINT NOT NULL,
 	route_bus BIGINT,
@@ -97,8 +89,7 @@ statistics_by_region(
 	station BIGINT,
 	PRIMARY KEY(tstamp, region_id));
 
-CREATE TABLE IF NOT EXISTS
-statistics_summary(
+CREATE TABLE statistics_summary(
 	tstamp timestamp NOT NULL,
 	route_bus BIGINT,
 	route_trolleybus BIGINT,
@@ -114,3 +105,7 @@ statistics_summary(
 	platform BIGINT,
 	station BIGINT,
 	PRIMARY KEY(tstamp));
+
+-- Add indexes to tables.
+CREATE INDEX idx_stops_geom ON transport_stops USING gist (geom);
+CREATE INDEX idx_stops_geom_center ON transport_stops USING gist (geom_center);
