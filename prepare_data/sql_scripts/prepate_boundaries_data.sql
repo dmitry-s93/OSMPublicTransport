@@ -1,4 +1,115 @@
-BEGIN
+-- ## Получение стран ##
+BEGIN;
+	TRUNCATE TABLE countries;
+
+	-- Внешняя геометрия
+
+	CREATE TEMP TABLE IF NOT EXISTS
+	countries_outer (
+		id BIGINT NOT NULL,
+		iso3166 text,
+		name text NOT NULL,
+		geom geometry,
+	PRIMARY KEY(id)
+	);
+
+	TRUNCATE TABLE countries_outer;
+
+	INSERT INTO countries_outer (id, iso3166, name, geom)
+	SELECT
+		id,
+		iso3166,
+		name,
+		ST_BuildArea(ST_Union(geom)) as geom
+	FROM 
+		(SELECT 
+			relations.id,
+			relations.tags->'ISO3166-1' as iso3166,
+			relations.tags->'name' as name,
+			relation_members.sequence_id as way_pos,
+			ST_MakeLine(nodes.geom) as geom
+		FROM relations, relation_members, ways, nodes, unnest(ways.nodes) WITH ORDINALITY AS t_nodes(node_id,node_pos)
+		WHERE 
+			relations.tags->'ISO3166-1' in ('BY','RU','UA') and
+			relations.tags->'admin_level'='2' and
+			relations.tags->'boundary'='administrative' and
+			relations.id=relation_members.relation_id and
+			relation_members.member_id=ways.id and
+			nodes.id = t_nodes.node_id and
+			relation_members.member_role='outer'
+		GROUP BY relations.id, iso3166, name, way_pos) as t_lines
+	GROUP BY id, iso3166, name
+	ORDER BY iso3166;
+
+	-- Внутренняя геометрия
+
+	CREATE TEMP TABLE IF NOT EXISTS
+	countries_inner (
+		id BIGINT NOT NULL,
+		iso3166 text,
+		name text NOT NULL,
+		geom geometry,
+	PRIMARY KEY(id)
+	);
+
+	TRUNCATE TABLE countries_inner;
+
+	INSERT INTO countries_inner (id, iso3166, name, geom)
+	SELECT
+		id,
+		iso3166,
+		name,
+		ST_BuildArea(ST_Union(geom)) as geom
+	FROM 
+		(SELECT 
+			relations.id,
+			relations.tags->'ISO3166-1' as iso3166,
+			relations.tags->'name' as name,
+			relation_members.sequence_id as way_pos,
+			ST_MakeLine(nodes.geom) as geom
+		FROM relations, relation_members, ways, nodes, unnest(ways.nodes) WITH ORDINALITY AS t_nodes(node_id,node_pos)
+		WHERE 
+			relations.tags->'ISO3166-1' in ('BY','RU','UA') and
+			relations.tags->'admin_level'='2' and
+			relations.tags->'boundary'='administrative' and
+			relations.id=relation_members.relation_id and
+			relation_members.member_id=ways.id and
+			nodes.id = t_nodes.node_id and
+			relation_members.member_role='inner'
+		GROUP BY relations.id, iso3166, name, way_pos) as t_lines
+	GROUP BY id, iso3166, name
+	ORDER BY iso3166;
+
+	-- Заносим страны с внутренней геометрией
+
+	INSERT INTO countries (id, iso3166, name, geom)
+	SELECT
+		countries_outer.id,
+		countries_outer.iso3166,
+		countries_outer.name,
+		ST_BuildArea(ST_Collect(countries_inner.geom, countries_outer.geom)) as geom
+	FROM countries_inner, countries_outer
+	WHERE
+		countries_inner.id=countries_outer.id and
+		countries_inner.geom <> '' and
+		countries_outer.geom <> '';
+
+	-- Заносим остатки из countries_outer
+
+	INSERT INTO countries (id, iso3166, name, geom)
+	SELECT
+		id,
+		iso3166,
+		name,
+		geom
+	FROM countries_outer
+	WHERE
+		id not in (SELECT id FROM countries_inner) and
+		geom <> '';
+END;
+
+-- ## Получение регионов ##
+BEGIN;
 	TRUNCATE TABLE regions;
 
 	-- Внешняя геометрия
@@ -114,7 +225,8 @@ BEGIN
 	GROUP BY regions_outer.id, regions_outer.iso3166, regions_outer.federal_district, regions_outer.name, regions_outer.geom;
 END;
 
-BEGIN
+-- ## Получение населенных пунктов ##
+BEGIN;
 	TRUNCATE TABLE places;
 
 	-- Relations
