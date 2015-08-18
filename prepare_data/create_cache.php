@@ -1,6 +1,6 @@
 <?php
 
-$domain = 'http://osmpublictransport/'; // the requested url
+$domain = 'http://localhost/'; // the requested url
 
 $ZoomRange = array(14, 14); // start and finish zoom
 $Feature = 'platform';
