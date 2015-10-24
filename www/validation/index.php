@@ -65,29 +65,39 @@ while ($row = pg_fetch_assoc($sql_quality)){
 	}
 	$output.="</td>";
 
-	$output.="<td><a href='routes?id=".$row['region_id']."&val=ref'>".($row['no_ref']+0)."</a>";
+	if ($row['routes'] > 0) {
+		$no_ref_percent=number_format(round($row['no_ref']/$row['routes']*100,2),2);
+		$no_name_percent=number_format(round($row['no_name']/$row['routes']*100,2),2);
+		$no_from_to_percent=number_format(round($row['no_from_to']/$row['routes']*100,2),2);
+	} else {
+		$no_ref_percent="0.00";
+		$no_name_percent="0.00";
+		$no_from_to_percent="0.00";
+	}
+
+	$output.="<td><a href='routes?id=".$row['region_id']."&val=ref'>".$no_ref_percent."%</a> (".($row['no_ref']+0);
 	if ($row['no_ref'] > $row['no_ref_prev']) {
 		$output.=" <span class='text_red'>↗".($row['no_ref']-$row['no_ref_prev'])."</span>";
 	} elseif ($row['no_ref'] < $row['no_ref_prev']) {
 		$output.=" <span class='text_green'>↘".($row['no_ref_prev']-$row['no_ref'])."</span>";
 	}
-	$output.="</td>";
+	$output.=")</td>";
 
-	$output.="<td><a href='routes?id=".$row['region_id']."&val=name'>".($row['no_name']+0)."</a>";
+	$output.="<td><a href='routes?id=".$row['region_id']."&val=name'>".$no_name_percent."%</a> (".($row['no_name']+0);
 	if ($row['no_name'] > $row['no_name_prev']) {
 		$output.=" <span class='text_red'>↗".($row['no_name']-$row['no_name_prev'])."</span>";
 	} elseif ($row['no_name'] < $row['no_name_prev']) {
 		$output.=" <span class='text_green'>↘".($row['no_name_prev']-$row['no_name'])."</span>";
 	}
-	$output.="</td>";
+	$output.=")</td>";
 
-	$output.="<td><a href='routes?id=".$row['region_id']."&val=from_to'>".($row['no_from_to']+0)."</a>";
+	$output.="<td><a href='routes?id=".$row['region_id']."&val=from_to'>".$no_from_to_percent."%</a> (".($row['no_from_to']+0);
 	if ($row['no_from_to'] > $row['no_from_to_prev']) {
 		$output.=" <span class='text_red'>↗".($row['no_from_to']-$row['no_from_to_prev'])."</span>";
 	} elseif ($row['no_from_to'] < $row['no_from_to_prev']) {
 		$output.=" <span class='text_green'>↘".($row['no_from_to_prev']-$row['no_from_to'])."</span>";
 	}
-	$output.="</td>";
+	$output.=")</td>";
 
 	$output.="
 	</tr>";

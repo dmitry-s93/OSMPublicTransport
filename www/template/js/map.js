@@ -266,11 +266,12 @@ function checkZoom() {
 }
 
 function bindLabel(feature, layer) {
-	if (feature.properties.name !== '') {
-		layer.bindLabel(feature.properties.name, {
-				direction: 'auto'
-			});
+	if (feature.properties.name == "") {
+		feature.properties.name = "Без названия";
 	}
+	layer.bindLabel(feature.properties.name, {
+		direction: 'auto'
+	});
 }
 
 function loadFeaturePopupData(feature, layer) {
@@ -391,10 +392,6 @@ function createRouteInfo(feature) {
 
 function createListElements(feature, layer) {
 	if (feature.properties) {
-		if (feature.properties.name == "") {
-			feature.properties.name = "Без названия";
-		}
-
 		if (feature.properties.type == 'platform') {
 			var item = document.getElementById('platform-list').appendChild(document.createElement('li'));
 			item.innerHTML = feature.properties.name;

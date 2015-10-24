@@ -1,4 +1,5 @@
 -- Drop all tables if they exist.
+DROP TABLE IF EXISTS countries;
 DROP TABLE IF EXISTS regions;
 DROP TABLE IF EXISTS places;
 DROP TABLE IF EXISTS transport_routes;
@@ -11,6 +12,13 @@ DROP TABLE IF EXISTS statistics_by_region;
 DROP TABLE IF EXISTS statistics_summary;
 
 -- Create tables
+CREATE TABLE countries (
+	id BIGINT NOT NULL,
+	iso3166 text,
+	name text NOT NULL,
+	geom geometry NOT NULL,
+	PRIMARY KEY(id));
+
 CREATE TABLE regions (
 	id BIGINT NOT NULL,
 	iso3166 text,
