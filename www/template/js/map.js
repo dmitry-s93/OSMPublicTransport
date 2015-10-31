@@ -25,7 +25,7 @@ function parseURL() {
 	if ('url_layer' in param) {
 		MapBaseLayer = param['url_layer'];
 	} else {
-		MapBaseLayer = 'S';
+		MapBaseLayer = 'M';
 	}
 	if ('url_overlays' in param) {
 		MapOverlays = param['url_overlays'];
