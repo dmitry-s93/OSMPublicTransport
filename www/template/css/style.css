@@ -19,18 +19,20 @@ div.menu {
 
 div.body {
 	position: fixed;
-	width:100%;
-	height:calc(100% - 56px);
-	padding-left:0px;
-	display:inline-block;
+	top: 56px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding-left: 0px;
+	display: inline-block;
 	background: #FFFFFF;
 	overflow: auto;
 }
 
 /* Main menu */
 ul.horizontal_menu {
-	margin-bottom:0px;
-	margin-top:0px;
+	margin-bottom: 0px;
+	margin-top: 0px;
 	list-style: none;
 	font-size: 0;
 	padding: 16px 14px 16px 14px;

@@ -43,7 +43,7 @@ div.map {
 
 div.top-message {
 	position: fixed;
-	left: calc(50% - 100px);
+	left: 40%;
 	top: 60px;
 	padding-right: 15px;
 	padding-left: 15px;
