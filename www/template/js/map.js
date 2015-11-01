@@ -445,7 +445,7 @@ var MapSurferAttr = OSMAttr+', ' + CCBYSAAttr + ', Rendering <a href="http://gis
 	MapnikAttr = OSMAttr+', ' + CCBYSAAttr,
 	PTAttr = 'Маршруты © <a href="http://www.openmap.lt/">openmap.lt</a>';
 
-var MapSurferUrl = 'http://129.206.74.245/tiles/roads/x={x}&y={y}&z={z}',
+var MapSurferUrl = 'http://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}',
 	SputnikUrl = 'http://tiles.maps.sputnik.ru/{z}/{x}/{y}.png',
 	MapnikUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 	PTUrl = 'http://pt.openmap.lt/{z}/{x}/{y}.png';
