@@ -58,6 +58,10 @@ $region_name=$row['name'];
 
 $output = "<div class='content_body_table'><h2 align=center>".$heading." (".$region_name.")</h2>";
 
+if ($_GET['val']=='wrong_geom') {
+	$output .= "<p><font color='#FF0000'>Внимание!</font> В настоящее время сюда также попадают маршруты, выполненные по старой схеме, и маршруты с самопересечением.</p>";
+}
+
 $output.="
 <table border>
 	<thead>
