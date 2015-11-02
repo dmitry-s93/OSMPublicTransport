@@ -9,10 +9,12 @@ SELECT
 	t_validation.no_ref,
 	t_validation.no_name,
 	t_validation.no_from_to,
+	t_validation.wrong_geom,
 	t_validation_prev.routes as routes_prev,
 	t_validation_prev.no_ref as no_ref_prev,
 	t_validation_prev.no_name as no_name_prev,
-	t_validation_prev.no_from_to as no_from_to_prev
+	t_validation_prev.no_from_to as no_from_to_prev,
+	t_validation_prev.wrong_geom as wrong_geom_prev
 FROM
 	regions LEFT JOIN
 	(SELECT
@@ -20,7 +22,8 @@ FROM
 		routes,
 		no_ref,
 		no_name,
-		no_from_to
+		no_from_to,
+		wrong_geom
 	FROM
 		transport_validation) as t_validation
 	ON regions.id=t_validation.region_id
@@ -30,7 +33,8 @@ FROM
 		routes,
 		no_ref,
 		no_name,
-		no_from_to
+		no_from_to,
+		wrong_geom
 	FROM
 		transport_validation_prev) as t_validation_prev
 	ON regions.id=t_validation_prev.region_id
@@ -43,11 +47,12 @@ $output.="
 <table border width=100%>
 	<thead>
 		<tr>
-			<th width=28%>Регионы</th>
-			<th width=18%>Маршруты (направления)</th>
-			<th width=18%>Маршруты без ref</th>
-			<th width=18%>Маршруты без name</th>
-			<th width=18%>Маршруты без from/to</th>
+			<th width=20%>Регионы</th>
+			<th width=16%>Маршруты (направления)</th>
+			<th width=16%>Маршруты без ref</th>
+			<th width=16%>Маршруты без name</th>
+			<th width=16%>Маршруты без from/to</th>
+			<th width=16%>Геометрия</th>
 		</tr>
 	</thead>
 	<tbody>";
@@ -69,10 +74,12 @@ while ($row = pg_fetch_assoc($sql_quality)){
 		$no_ref_percent=number_format(round($row['no_ref']/$row['routes']*100,2),2);
 		$no_name_percent=number_format(round($row['no_name']/$row['routes']*100,2),2);
 		$no_from_to_percent=number_format(round($row['no_from_to']/$row['routes']*100,2),2);
+		$wrong_geom_percent=number_format(round($row['wrong_geom']/$row['routes']*100,2),2);
 	} else {
 		$no_ref_percent="0.00";
 		$no_name_percent="0.00";
 		$no_from_to_percent="0.00";
+		$wrong_geom_percent="0.00";
 	}
 
 	$output.="<td><a href='routes?id=".$row['region_id']."&val=ref'>".$no_ref_percent."%</a> (".($row['no_ref']+0);
@@ -97,6 +104,14 @@ while ($row = pg_fetch_assoc($sql_quality)){
 	} elseif ($row['no_from_to'] < $row['no_from_to_prev']) {
 		$output.=" <span class='text_green'>↘".($row['no_from_to_prev']-$row['no_from_to'])."</span>";
 	}
+	$output.=")</td>";
+	
+	$output.="<td><a href='routes?id=".$row['region_id']."&val=wrong_geom'>".$wrong_geom_percent."%</a> (".($row['wrong_geom']+0);
+	//if ($row['wrong_geom'] > $row['wrong_geom_prev']) {
+		//$output.=" <span class='text_red'>↗".($row['wrong_geom']-$row['wrong_geom_prev'])."</span>";
+	//} elseif ($row['wrong_geom'] < $row['wrong_geom_prev']) {
+		//$output.=" <span class='text_green'>↘".($row['wrong_geom_prev']-$row['wrong_geom'])."</span>";
+	//}
 	$output.=")</td>";
 
 	$output.="

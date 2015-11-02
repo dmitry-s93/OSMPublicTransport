@@ -71,7 +71,7 @@ $output.="
 while ($row = pg_fetch_assoc($sql_routes)){
 	$output.=
 	"<tr class='highlight'>
-		<td><a href='http://www.openstreetmap.org/relation/".$row['id']."'>".$row['id']."</a> (<a href='http://localhost:8111/import?url=http://api.openstreetmap.org/api/0.6/relation/".$row['id']."/full'>JOSM</a>, <a href='http://ra.osmsurround.org/analyze.jsp?relationId=".$row['id']."'>analyze</a>)</td>
+		<td><a href='http://www.openstreetmap.org/relation/".$row['id']."' target='_blank'>".$row['id']."</a> (<a href='http://localhost:8111/import?url=http://api.openstreetmap.org/api/0.6/relation/".$row['id']."/full' target='_blank'>JOSM</a>, <a href='http://ra.osmsurround.org/analyze.jsp?relationId=".$row['id']."' target='_blank'>analyze</a>)</td>
 		<td>".$row['route']."</td>";
 	if ($row['ref']=="") {
 		$output.="<td class='warning'>-</td>";

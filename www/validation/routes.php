@@ -16,6 +16,10 @@ case "from_to":
 	$r_validation="not(transport_routes.tags::hstore ?| ARRAY['from','to'])";
 	$heading="Список маршрутов без from/to";
 	break;
+case "wrong_geom":
+	$r_validation="transport_routes.num_geom > 1";
+	$heading="Тест геометрии";
+	break;
 }
 
 $sql_region = pg_query("
@@ -37,7 +41,8 @@ SELECT DISTINCT
 	transport_routes.tags->'from' as from,
 	transport_routes.tags->'via' as via,
 	transport_routes.tags->'to' as to,
-	transport_routes.length
+	transport_routes.length,
+	transport_routes.num_geom
 FROM
 	transport_routes, transport_location
 WHERE
@@ -63,6 +68,7 @@ $output.="
 			<th>name</th>
 			<th>from</th>
 			<th>to</th>
+			<th>Элементы</th>
 			<th>Длина</th>
 		</tr>
 	</thead>";
@@ -70,7 +76,7 @@ $output.="
 while ($row = pg_fetch_assoc($sql_routes)){
 	$output.=
 	"<tr class='highlight'>
-		<td><a href='http://openstreetmap.org/relation/".$row['id']."'>".$row['id']."</a> (<a href='http://localhost:8111/import?url=http://api.openstreetmap.org/api/0.6/relation/".$row['id']."/full' target='_blank'>JOSM</a>)</td>
+		<td><a href='http://openstreetmap.org/relation/".$row['id']."' target='_blank'>".$row['id']."</a> (<a href='http://localhost:8111/import?url=http://api.openstreetmap.org/api/0.6/relation/".$row['id']."/full' target='_blank'>JOSM</a>, <a href='http://ra.osmsurround.org/analyze.jsp?relationId=".$row['id']."' target='_blank'>analyze</a>)</td>
 		<td>".$row['route']."</td>";
 	if ($row['ref']=="") {
 		$output.="<td class='warning'>-</td>";
@@ -92,6 +98,7 @@ while ($row = pg_fetch_assoc($sql_routes)){
 	} else {
 		$output.="<td>".$row['to']."</td>";
 	}
+	$output.="<td>".$row['num_geom']."</td>";
 	$output.="<td>".round($row['length']/1000,3)." км.</td>
 	</tr>";
 }

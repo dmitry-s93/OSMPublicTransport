@@ -41,6 +41,7 @@ CREATE TABLE transport_routes (
 	tags HSTORE NOT NULL,
 	geom GEOMETRY,
 	length DOUBLE PRECISION,
+	num_geom SMALLINT,
 	PRIMARY KEY(id));
 
 CREATE TABLE transport_route_master (
@@ -69,6 +70,7 @@ CREATE TABLE transport_validation(
 	no_ref BIGINT,
 	no_name BIGINT,
 	no_from_to BIGINT,
+	wrong_geom BIGINT,
 	PRIMARY KEY(region_id));
 
 CREATE TABLE transport_validation_prev(
@@ -77,6 +79,7 @@ CREATE TABLE transport_validation_prev(
 	no_ref BIGINT,
 	no_name BIGINT,
 	no_from_to BIGINT,
+	wrong_geom BIGINT,
 	PRIMARY KEY(region_id));
 
 CREATE TABLE statistics_by_region(

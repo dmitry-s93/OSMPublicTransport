@@ -1,13 +1,14 @@
 ﻿BEGIN;
 	TRUNCATE TABLE transport_routes;
 
-	INSERT INTO transport_routes (id,tstamp,tags,geom,length)
+	INSERT INTO transport_routes (id,tstamp,tags,geom,length,num_geom)
 	SELECT
 		routes.route_id as id,
 		routes.tstamp,
 		relations.tags,
 		ST_SimplifyPreserveTopology(routes.geom,0.00001) as geom,
-		ST_Length(routes.geom, true) as length
+		ST_Length(routes.geom, true) as length,
+		ST_NumGeometries(geom) as num_geom
 	FROM
 		relations,
 		(SELECT
@@ -187,18 +188,14 @@ BEGIN;
 	TRUNCATE TABLE transport_validation;
 
 	INSERT INTO
-	transport_validation(
-		region_id,
-		routes,
-		no_ref,
-		no_name,
-		no_from_to)
+	transport_validation(region_id, routes, no_ref, no_name, no_from_to, wrong_geom)
 	SELECT
 		routes.region_id,
 		count(routes.route_id) as routes,
 		count(case when routes.ref is null then true else null end) as no_ref,
 		count(case when routes.name is null then true else null end) as no_name,
-		count(case when (routes.from is null or routes.to is null) then true else null end) as no_from_to
+		count(case when (routes.from is null or routes.to is null) then true else null end) as no_from_to,
+		count(case when routes.num_geom > 1 then true else null end) as wrong_geom
 	FROM
 		regions,
 		(SELECT DISTINCT
@@ -208,7 +205,8 @@ BEGIN;
 			transport_routes.tags->'ref' as ref,
 			transport_routes.tags->'name' as name,
 			transport_routes.tags->'from' as from,
-			transport_routes.tags->'to' as to
+			transport_routes.tags->'to' as to,
+			transport_routes.num_geom as num_geom
 		FROM
 			transport_routes,
 			transport_location
