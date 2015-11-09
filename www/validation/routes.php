@@ -17,7 +17,7 @@ case "from_to":
 	$heading="Список маршрутов без from/to";
 	break;
 case "wrong_geom":
-	$r_validation="transport_routes.num_geom > 1";
+	$r_validation="transport_routes.num_geom > 1 and transport_routes.version=2";
 	$heading="Тест геометрии";
 	break;
 }
@@ -42,7 +42,8 @@ SELECT DISTINCT
 	transport_routes.tags->'via' as via,
 	transport_routes.tags->'to' as to,
 	transport_routes.length,
-	transport_routes.num_geom
+	transport_routes.num_geom,
+	transport_routes.version
 FROM
 	transport_routes, transport_location
 WHERE
@@ -59,7 +60,7 @@ $region_name=$row['name'];
 $output = "<div class='content_body_table'><h2 align=center>".$heading." (".$region_name.")</h2>";
 
 if ($_GET['val']=='wrong_geom') {
-	$output .= "<p><font color='#FF0000'>Внимание!</font> В настоящее время сюда также попадают маршруты, выполненные по старой схеме, и маршруты с самопересечением.</p>";
+	$output .= "<p><font color='#FF0000'>Внимание!</font> В настоящее время сюда также попадают маршруты с самопересечением. Маршруты, выполненные по старой схеме, временно не поддерживаются.</p>";
 }
 
 $output.="
@@ -74,6 +75,7 @@ $output.="
 			<th>to</th>
 			<th>Элементы</th>
 			<th>Длина</th>
+			<th>Ver</th>
 		</tr>
 	</thead>";
 
@@ -103,7 +105,8 @@ while ($row = pg_fetch_assoc($sql_routes)){
 		$output.="<td>".$row['to']."</td>";
 	}
 	$output.="<td>".$row['num_geom']."</td>";
-	$output.="<td>".round($row['length']/1000,3)." км.</td>
+	$output.="<td>".round($row['length']/1000,3)." км.</td>";
+	$output.="<td>".$row['version']."</td>
 	</tr>";
 }
 

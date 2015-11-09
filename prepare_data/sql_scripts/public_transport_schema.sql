@@ -42,6 +42,7 @@ CREATE TABLE transport_routes (
 	geom GEOMETRY,
 	length DOUBLE PRECISION,
 	num_geom SMALLINT,
+	version SMALLINT,
 	PRIMARY KEY(id));
 
 CREATE TABLE transport_route_master (

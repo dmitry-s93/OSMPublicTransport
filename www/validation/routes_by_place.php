@@ -31,7 +31,8 @@ SELECT
 	transport_routes.tags->'to' as to,
 	transport_routes.tags->'operator' as operator,
 	transport_routes.tags->'network' as network,
-	transport_routes.length
+	transport_routes.length,
+	transport_routes.version
 FROM
 	transport_routes, transport_location
 WHERE
@@ -65,6 +66,7 @@ $output.="
 			<th>operator</th>
 			<th>network</th>
 			<th>Длина</th>
+			<th>Ver</th>
 		</tr>
 	</thead>";
 
@@ -103,7 +105,8 @@ while ($row = pg_fetch_assoc($sql_routes)){
 	} else {
 		$output.="<td>".$row['network']."</td>";
 	}
-	$output.="<td>".round($row['length']/1000,3)." км.</td>
+	$output.="<td>".round($row['length']/1000,3)." км.</td>";
+	$output.="<td>".$row['version']."</td>
 	</tr>";
 }
 
