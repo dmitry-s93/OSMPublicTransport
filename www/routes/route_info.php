@@ -14,33 +14,6 @@ WHERE
 	id=".$r_place
 );
 
-//Check version
-$sql_route_version = pg_query("
-	SELECT
-		--relations.id,
-		--relations.tags->'route' as type,
-		--relations.tags->'ref' as ref,
-		count(relation_members.member_role) as count
-	FROM transport_routes, relation_members, transport_location
-	WHERE
-		transport_location.place_id=".$r_place." and
-		transport_location.route_id=transport_routes.id and
-		relation_members.relation_id=transport_routes.id and
-		--relation_members.member_role in ('forward','backward','forward:stop','backward:stop') and
-		relation_members.member_role in ('forward:stop','backward:stop') and
-		transport_routes.tags->'route'='".$r_type."' and
-		transport_routes.tags->'ref'='".$r_ref."'
-	");
-
-if (pg_fetch_assoc($sql_route_version)['count']>0) {
-	$route_version=1;
-} else
-{
-	$route_version=2;
-}
-
-//--------------------------------------------------------------------------
-
 $sql_route = pg_query("
 	SELECT
 		transport_routes.id,
@@ -49,7 +22,8 @@ $sql_route = pg_query("
 		transport_routes.tags->'from' as route_from,
 		transport_routes.tags->'via' as route_via,
 		transport_routes.tags->'to' as route_to,
-		transport_routes.length as length
+		transport_routes.length,
+		transport_routes.version
 	FROM transport_routes, transport_location
 	WHERE
 		transport_location.place_id=".$r_place." and
@@ -58,26 +32,26 @@ $sql_route = pg_query("
 		transport_routes.tags->'ref'='".$r_ref."'
 	");
 
-$row = pg_fetch_assoc($sql_place);
-$place_id=$row['id'];
-$place_name=$row['name'];
+$row_place = pg_fetch_assoc($sql_place);
+$place_id=$row_place['id'];
+$place_name=$row_place['name'];
 
 $output = "<div class='content_body'><h2 align=center>".$transport_type_names[$r_type]." ".$r_ref." (<a href='routes_list?id=".$place_id."'>".$place_name."</a>)</h2>";
 
-while ($row = pg_fetch_assoc($sql_route)){
+while ($row_route = pg_fetch_assoc($sql_route)){
 
-	if ($route_version==2) {
+	if ($row_route['version']==2) {
 		//New version
-		if ($row['route_from']<>'' and $row['route_to']<>'') {
-			$pt_name=": ".$row['route_from']." ⇨ ".$row['route_to'];
+		if ($row_route['route_from']<>'' and $row_route['route_to']<>'') {
+			$pt_name=": ".$row_route['route_from']." ⇨ ".$row_route['route_to'];
 		} else
 		{
 			$pt_name="";
 		}
 
-		$route_name=$transport_type_names[$r_type]." ".$row['ref'].$pt_name;
-		$output.="<p><b>".$route_name."</b> [<a href='../#route=".$row['id']."'>показать на карте</a>]</b><br>
-		Протяженность маршрута: ".round($row['length']/1000,3)." км.</p>";
+		$route_name=$transport_type_names[$r_type]." ".$row_route['ref'].$pt_name;
+		$output.="<p><b>".$route_name."</b> [<a href='../#route=".$row_route['id']."'>показать на карте</a>]</b><br>
+		Протяженность маршрута: ".round($row_route['length']/1000,3)." км.</p>";
 
 		$sql_stop = pg_query("
 			SELECT
@@ -104,7 +78,7 @@ while ($row = pg_fetch_assoc($sql_route)){
 				) as stop_area
 			ON (transport_stops.id = stop_area.member_id)
 			WHERE
-				relation_members.relation_id=".$row['id']." and
+				relation_members.relation_id=".$row_route['id']." and
 				relation_members.member_id=transport_stops.id and
 				relation_members.member_role in ('stop','stop_entry_only','stop_exit_only')
 			ORDER BY
@@ -136,7 +110,7 @@ while ($row = pg_fetch_assoc($sql_route)){
 				) as stop_area
 			ON (transport_stops.id = stop_area.member_id)
 			WHERE
-				relation_members.relation_id=".$row['id']." and
+				relation_members.relation_id=".$row_route['id']." and
 				relation_members.member_id=transport_stops.id and
 				relation_members.member_role in ('platform','platform_entry_only','platform_exit_only')
 			ORDER BY
@@ -158,7 +132,6 @@ while ($row = pg_fetch_assoc($sql_route)){
 
 	} else {
 		//Old version
-
 		$sql_stop = pg_query("
 			SELECT
 			transport_stops.id,
@@ -169,7 +142,7 @@ while ($row = pg_fetch_assoc($sql_route)){
 			transport_stops,
 			relation_members
 		WHERE
-			relation_members.relation_id=".$row['id']." and
+			relation_members.relation_id=".$row_route['id']." and
 			relation_members.member_id=transport_stops.id and
 			relation_members.member_role in ('forward:stop','backward:stop')
 		ORDER BY platform_order
@@ -185,9 +158,9 @@ while ($row = pg_fetch_assoc($sql_route)){
 			}
 		}
 
-		$output.="<p><b><a href='http://openstreetmap.org/relation/".$row['id']."'>".$transport_type_names[$r_type]." ".$row['ref']."</a>: прямой маршрут</b><br></p>";
+		$output.="<p><b><a href='http://openstreetmap.org/relation/".$row_route['id']."'>".$transport_type_names[$r_type]." ".$row_route['ref']."</a>: прямой маршрут</b><br></p>";
 		$output.="<ol class='route_info'>".$forward."</ol>";
-		$output.="<p><b><a href='http://openstreetmap.org/relation/".$row['id']."'>".$transport_type_names[$r_type]." ".$row['ref']."</a>: обратный маршрут</b><br></p>";
+		$output.="<p><b><a href='http://openstreetmap.org/relation/".$row_route['id']."'>".$transport_type_names[$r_type]." ".$row_route['ref']."</a>: обратный маршрут</b><br></p>";
 		$output.="<ol class='route_info'>".$backward."</ol>";
 
 		$output.="<p><font color=#FF0000>Внимание! Маршрут выполнен по старой схеме. Некоторая информация может быть недоступна.</font></p>";
