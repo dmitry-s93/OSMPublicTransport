@@ -17,8 +17,8 @@ case "from_to":
 	$heading="Список маршрутов без from/to";
 	break;
 case "wrong_geom":
-	$r_validation="transport_routes.num_geom > 1 and transport_routes.version=2";
-	$heading="Тест геометрии";
+	$r_validation="transport_routes.is_valid=false and transport_routes.version=2";
+	$heading="Ошибки геометрии";
 	break;
 }
 
@@ -42,8 +42,8 @@ SELECT DISTINCT
 	transport_routes.tags->'via' as via,
 	transport_routes.tags->'to' as to,
 	transport_routes.length,
-	transport_routes.num_geom,
-	transport_routes.version
+	transport_routes.version,
+	transport_routes.is_valid
 FROM
 	transport_routes, transport_location
 WHERE
@@ -60,7 +60,7 @@ $region_name=$row['name'];
 $output = "<div class='content_body_table'><h2 align=center>".$heading." (".$region_name.")</h2>";
 
 if ($_GET['val']=='wrong_geom') {
-	$output .= "<p><font color='#FF0000'>Внимание!</font> В настоящее время сюда также попадают маршруты с самопересечением. Маршруты, выполненные по старой схеме, временно не поддерживаются.</p>";
+	$output .= "<p>На странице отображаются маршруты с ошибками геометрии. Маршруты, выполненные по старой схеме, не отображаются.</p>";
 }
 
 $output.="
@@ -73,9 +73,9 @@ $output.="
 			<th>name</th>
 			<th>from</th>
 			<th>to</th>
-			<th>Элементы</th>
 			<th>Длина</th>
 			<th>Ver</th>
+			<th>Valid</th>
 		</tr>
 	</thead>";
 
@@ -104,16 +104,26 @@ while ($row = pg_fetch_assoc($sql_routes)){
 	} else {
 		$output.="<td>".$row['to']."</td>";
 	}
-	$output.="<td>".$row['num_geom']."</td>";
 	$output.="<td>".round($row['length']/1000,3)." км.</td>";
-	$output.="<td>".$row['version']."</td>
-	</tr>";
+	$output.="<td>".$row['version']."</td>";
+	if ($row['is_valid']=='t') {
+		$output.="<td>true</td>";
+	} else {
+		if ($row['version']=='2') {
+			$output.="<td class='warning'><a href='geometry?id=".$row['id']."'>false</a></td>";
+		} else {
+			$output.="<td>n/a</td>";
+		}
+	}
+
+	$output.="</tr>";
 }
 
 $output.="</tbody></table></div>";
 
 pg_close($dbconn);
 
+$page_title=$page_title." - ".$heading." (".$region_name.")";
 $page = 'validation';
 include(TEMPLATE_PATH);
 ?>

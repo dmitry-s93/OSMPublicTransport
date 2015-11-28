@@ -1,27 +1,30 @@
 ﻿BEGIN;
 	TRUNCATE TABLE transport_routes;
+	TRUNCATE TABLE incorrect_routes;
 
-	INSERT INTO transport_routes (id, tstamp, tags, geom, length, num_geom, version)
+	INSERT INTO transport_routes (id, tstamp, tags, geom, length, version, is_valid)
 	SELECT
 		routes.route_id as id,
 		routes.tstamp,
 		relations.tags,
 		ST_SimplifyPreserveTopology(routes.geom,0.00001) as geom,
 		ST_Length(routes.geom, true) as length,
-		ST_NumGeometries(geom) as num_geom,
-		(case when (routes.old_ver > 0) then 1 else 2 end) as version
+		CheckRouteVer(routes.route_id) as version,
+		CASE
+			WHEN (CheckRouteVer(routes.route_id)=2)
+			THEN RouteIsValid(routes.route_id, true)
+			ELSE RouteIsValid(routes.route_id, false)
+		END as is_valid
 	FROM
 		relations,
 		(SELECT
 			route_id,
-			count(case when (member_role = 'forward' or member_role = 'backward') then true else null end) as old_ver,
 			MAX(ways.tstamp) as tstamp,
 			ST_LineMerge(ST_Union(ways.geom)) as geom
 		FROM
 			(SELECT
 				route_id,
 				way_pos,
-				member_role,
 				MAX(nodes.tstamp) as tstamp,
 				ST_makeLine(nodes.geom) as geom
 			FROM
@@ -29,7 +32,6 @@
 					relations.id as route_id,
 					t_nodes.node_pos as node_pos,
 					relation_members.sequence_id as way_pos,
-					relation_members.member_role,
 					relations.tstamp,
 					nodes.geom as geom
 				FROM relations, relation_members, ways, nodes, unnest(ways.nodes) WITH ORDINALITY AS t_nodes(node_id,node_pos)
@@ -41,7 +43,7 @@
 					relation_members.member_id=ways.id and
 					nodes.id = t_nodes.node_id
 				ORDER BY way_pos, node_pos) as nodes
-			GROUP BY route_id, way_pos, member_role) as ways
+			GROUP BY route_id, way_pos) as ways
 		GROUP BY route_id) as routes
 	WHERE routes.route_id=relations.id;
 END;
@@ -199,7 +201,7 @@ BEGIN;
 		count(case when routes.ref is null then true else null end) as no_ref,
 		count(case when routes.name is null then true else null end) as no_name,
 		count(case when (routes.from is null or routes.to is null) then true else null end) as no_from_to,
-		count(case when (routes.num_geom > 1 and routes.version = 2) then true else null end) as wrong_geom
+		count(case when (routes.is_valid = false and routes.version = 2) then true else null end) as wrong_geom
 	FROM
 		regions,
 		(SELECT DISTINCT
@@ -210,8 +212,8 @@ BEGIN;
 			transport_routes.tags->'name' as name,
 			transport_routes.tags->'from' as from,
 			transport_routes.tags->'to' as to,
-			transport_routes.num_geom as num_geom,
-			transport_routes.version as version
+			transport_routes.version,
+			transport_routes.is_valid
 		FROM
 			transport_routes,
 			transport_location

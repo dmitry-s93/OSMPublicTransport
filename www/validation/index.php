@@ -107,11 +107,11 @@ while ($row = pg_fetch_assoc($sql_quality)){
 	$output.=")</td>";
 	
 	$output.="<td><a href='routes?id=".$row['region_id']."&val=wrong_geom'>".$wrong_geom_percent."%</a> (".($row['wrong_geom']+0);
-	//if ($row['wrong_geom'] > $row['wrong_geom_prev']) {
-		//$output.=" <span class='text_red'>↗".($row['wrong_geom']-$row['wrong_geom_prev'])."</span>";
-	//} elseif ($row['wrong_geom'] < $row['wrong_geom_prev']) {
-		//$output.=" <span class='text_green'>↘".($row['wrong_geom_prev']-$row['wrong_geom'])."</span>";
-	//}
+	if ($row['wrong_geom'] > $row['wrong_geom_prev']) {
+		$output.=" <span class='text_red'>↗".($row['wrong_geom']-$row['wrong_geom_prev'])."</span>";
+	} elseif ($row['wrong_geom'] < $row['wrong_geom_prev']) {
+		$output.=" <span class='text_green'>↘".($row['wrong_geom_prev']-$row['wrong_geom'])."</span>";
+	}
 	$output.=")</td>";
 
 	$output.="
