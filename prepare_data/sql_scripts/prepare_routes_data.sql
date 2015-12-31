@@ -86,7 +86,7 @@ BEGIN;
 	WHERE
 		tags->'public_transport' in ('stop_position', 'platform','station') or
 		tags->'highway'='bus_stop' or tags->'amenity'='bus_station' or
-		tags->'railway' in ('stop', 'tram_stop','halt','station');
+		tags->'railway' in ('stop', 'tram_stop','halt','station','subway_entrance');
 
 	-- Линии и полигоны
 	INSERT INTO transport_stops (id,tstamp,tags,geom,geom_center)

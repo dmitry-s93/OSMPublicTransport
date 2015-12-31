@@ -1,7 +1,8 @@
-var MapBaseLayer;
-var MapOverlays;
-var MapOverlaysTmp;
-var RouteID;
+var 
+	MapBaseLayer,
+	MapOverlays,
+	MapOverlaysTmp,
+	RouteID;
 
 function parseURL() {
 	if (document.location.hash == '') {
@@ -29,8 +30,10 @@ function parseURL() {
 	}
 	if ('url_overlays' in param) {
 		MapOverlays = param['url_overlays'];
-	} else {
+	} else if (!('url_map' in param)) {
 		MapOverlays = 'P';
+	} else {
+		MapOverlays = '';
 	}
 	if ('url_route' in param) {
 		RouteID = param['url_route'];
@@ -82,6 +85,7 @@ function onOverlayChange() {
 	if (map.hasLayer(stationsGeoJsonTileLayer) == true) MapOverlays +='N';
 	if (map.hasLayer(platformsGeoJsonTileLayer) == true) MapOverlays +='P';
 	if (map.hasLayer(stopsGeoJsonTileLayer) == true) MapOverlays +='S';
+	if (map.hasLayer(subwayEntranceGeoJsonTileLayer) == true) MapOverlays +='M';
 	setMapURL();
 }
 
@@ -105,6 +109,11 @@ function setOverlays(OverlaysStr) {
 		map.addLayer(stopsGeoJsonTileLayer);
 	} else {
 		map.removeLayer(stopsGeoJsonTileLayer);
+	}
+	if (OverlaysStr.indexOf('M') + 1) {
+		map.addLayer(subwayEntranceGeoJsonTileLayer);
+	} else {
+		map.removeLayer(subwayEntranceGeoJsonTileLayer);
 	}
 }
 
@@ -321,6 +330,12 @@ function loadFeaturePopupData(feature, layer) {
 				}
 			}
 			if (feature.properties) {
+				if (feature.properties.name == "") {
+					featureName = "Без названия";
+				} else {
+					featureName = feature.properties.name;
+				}
+
 				switch (feature.properties.type) {
 					case 'station':
 						featureType = 'Станция';
@@ -331,12 +346,12 @@ function loadFeaturePopupData(feature, layer) {
 					case 'stop':
 						featureType = 'Место остановки транспорта';
 						break;
-				}
-				if (feature.properties.name == "") {
-					feature.properties.name = "Без названия";
+					case 'subway_entrance':
+						featureType = 'Вход в метро';
+						break;
 				}
 
-				popupContent = "<span id='popup-title'>" + feature.properties.name + "</span>";
+				popupContent = "<span id='popup-title'>" + featureName + "</span>";
 				popupContent += "<br>" + featureType + "<hr>";
 
 				if (busRes !== '') {
@@ -519,7 +534,7 @@ var stationsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/station/{z}/{x}/{y}.geo
 	}
 );
 
-var stopsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/stop_pos/{z}/{x}/{y}.geojson', {
+var stopsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/stop_position/{z}/{x}/{y}.geojson', {
 		clipTiles: false,
 		unique: function (feature) {
 			return feature.properties.id;
@@ -553,6 +568,38 @@ var stopsGeoJsonTileLayer = new L.TileLayer.GeoJSON('/stop_pos/{z}/{x}/{y}.geojs
 	}
 );
 
+var subwayEntranceGeoJsonTileLayer = new L.TileLayer.GeoJSON('/subway_entrance/{z}/{x}/{y}.geojson', {
+		clipTiles: false,
+		unique: function (feature) {
+			return feature.properties.id;
+		},
+		minZoom: 14
+	}, {
+		style: {
+			"color": "#ee2f2e",
+			"weight": 2,
+			"opacity": 1
+		},
+		pointToLayer: function (feature, latlng) {
+			var cMarker = L.circleMarker(latlng, {
+				radius: 6,
+				fillColor: "#FFFFFF",
+				color: "#000",
+				weight: 1,
+				opacity: 1,
+				fillOpacity: 1
+			});
+			return cMarker;
+		},
+		onEachFeature: function (feature, layer) {
+			bindLabel(feature, layer);
+			layer.on('click', function() {
+				loadFeaturePopupData(feature, layer);
+			});
+		}
+	}
+);
+
 var baseLayers = {
 	"MapSurfer": MapSurferLayer,
 	"sputnik.ru": SputnikRuLayer,
@@ -564,6 +611,7 @@ var overlays = {
 	"Станции": stationsGeoJsonTileLayer,
 	"Остановки / платформы": platformsGeoJsonTileLayer,
 	"Места остановок": stopsGeoJsonTileLayer,
+	"Входы в метро": subwayEntranceGeoJsonTileLayer
 };
 
 parseURL();

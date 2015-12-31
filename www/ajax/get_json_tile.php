@@ -28,6 +28,8 @@ $tags_stop_position = "
 	transport_stops.tags->'public_transport'='stop_position' or
 	transport_stops.tags->'railway'='stop' or
 	transport_stops.tags->'railway'='tram_stop'";
+$tags_subway_entrance = "
+	transport_stops.tags->'railway'='subway_entrance'";
 
 switch ($type) {
 	case "station":
@@ -36,8 +38,11 @@ switch ($type) {
 	case "platform":
 		$TagsArr[] = $tags_platform;
 		break;
-	case "stop_pos":
+	case "stop_position":
 		$TagsArr[] = $tags_stop_position;
+		break;
+	case "subway_entrance":
+		$TagsArr[] = $tags_subway_entrance;
 		break;
 }
 
@@ -57,6 +62,7 @@ $sql_query=pg_query("
 			WHEN (".$tags_station.") THEN 'station'
 			WHEN (".$tags_platform.") THEN 'platform'
 			WHEN (".$tags_stop_position.") THEN 'stop'
+			WHEN (".$tags_subway_entrance.") THEN 'subway_entrance'
 			ELSE 'unknown'
 		END as type,
 		CASE

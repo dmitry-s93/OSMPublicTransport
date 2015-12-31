@@ -11,7 +11,7 @@ $osmosis_bin_path \
 
 $osmosis_bin_path \
 	--read-pbf file="$input_file_path" \
-	--node-key-value keyValueList="public_transport.stop_position,public_transport.platform,public_transport.station,highway.bus_stop,amenity.bus_station,railway.stop,railway.tram_stop,railway.halt,railway.station" \
+	--node-key-value keyValueList="public_transport.stop_position,public_transport.platform,public_transport.station,highway.bus_stop,amenity.bus_station,railway.stop,railway.tram_stop,railway.halt,railway.station,railway.subway_entrance" \
 	--used-way \
 	--write-pbf file="$temp_path/file2.osm.pbf"
 
