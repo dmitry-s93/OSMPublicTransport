@@ -1,13 +1,18 @@
-var 
+var
 	MapBaseLayer,
 	MapOverlays,
 	MapOverlaysTmp,
 	RouteID;
 
+function getCookie(name) {
+	var matches = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
+	return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
 function parseURL() {
 	if (document.location.hash == '') {
-		if (document.cookie.substr(19) !== '') {
-			document.location.hash = document.cookie.substr(19);
+		if (getCookie('OSMPublicTransport') !== undefined) {
+			document.location.hash = getCookie('OSMPublicTransport');
 		}
 	}
 
