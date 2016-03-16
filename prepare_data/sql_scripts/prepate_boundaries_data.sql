@@ -136,7 +136,7 @@ BEGIN;
 	FROM relations, relation_members,
 		(SELECT 
 			relations.id,
-			relations.tags->'iso3166-2' as iso3166,
+			relations.tags->'ISO3166-2' as iso3166,
 			relations.tags->'name' as name,
 			relation_members.sequence_id as way_pos,
 			ST_MakeLine(nodes.geom) as geom
@@ -182,7 +182,7 @@ BEGIN;
 	FROM relations, relation_members,
 		(SELECT 
 			relations.id,
-			relations.tags->'iso3166-2' as iso3166,
+			relations.tags->'ISO3166-2' as iso3166,
 			relations.tags->'name' as name,
 			relation_members.sequence_id as way_pos,
 			ST_MakeLine(nodes.geom) as geom

@@ -27,9 +27,13 @@ echo "+++++ Loading data into the database +++++"
 . ./sh_scripts/data_to_db.sh
 
 echo "+++++ Processing of data in the database +++++"
+psql -h $db_host -d $db_name -U $db_user -f "sql_scripts/prepate_boundaries_data.sql"
 psql -h $db_host -d $db_name -U $db_user -f "sql_scripts/prepare_routes_data.sql"
 
 echo "+++++ Cleaning of the database +++++"
 psql -h $db_host -d $db_name -U $db_user -f "sql_scripts/clean_db.sql"
+
+echo "+++++ Create database backup +++++"
+. ./create_db_backup.sh
 
 echo "+++++ Done +++++"

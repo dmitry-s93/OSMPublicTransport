@@ -5,6 +5,8 @@ $osmosis_bin_path \
 		route_master=bus,trolleybus,share_taxi,tram,train \
 		route=bus,trolleybus,share_taxi,tram,train \
 		public_transport=stop_area \
+		admin_level=* \
+		place=city,town,village,hamlet \
 	--used-way \
 	--used-node \
 	--write-pbf file="$temp_path/file1.osm.pbf"
@@ -17,7 +19,7 @@ $osmosis_bin_path \
 
 $osmosis_bin_path \
 	--read-pbf file="$input_file_path" \
-	--way-key-value keyValueList="public_transport.platform,public_transport.station,amenity.bus_station,railway.station" \
+	--way-key-value keyValueList="public_transport.platform,public_transport.station,amenity.bus_station,railway.station,place.city,place.town,place.village,place.hamlet" \
 	--tag-filter reject-relations \
 	--used-node \
 	--write-pbf file="$temp_path/file3.osm.pbf"
