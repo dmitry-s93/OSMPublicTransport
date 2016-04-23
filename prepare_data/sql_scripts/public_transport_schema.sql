@@ -15,14 +15,15 @@ DROP TABLE IF EXISTS statistics_summary;
 -- Create tables
 CREATE TABLE countries (
 	id BIGINT NOT NULL,
-	iso3166 text,
+	iso3166_1 varchar(2) NOT NULL,
 	name text NOT NULL,
 	geom geometry NOT NULL,
 	PRIMARY KEY(id));
 
 CREATE TABLE regions (
 	id BIGINT NOT NULL,
-	iso3166 text,
+	iso3166_1 varchar(2) NOT NULL,
+	iso3166_2 varchar(6),
 	federal_district text NOT NULL,
 	name text NOT NULL,
 	geom geometry NOT NULL,
