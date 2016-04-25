@@ -5,7 +5,7 @@ $r_id = $_GET['id'];
 
 $sql_region = pg_query("
 SELECT
-	iso3166,
+	iso3166_2,
 	name
 FROM regions
 WHERE
