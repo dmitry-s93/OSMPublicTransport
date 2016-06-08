@@ -130,8 +130,7 @@ CREATE INDEX idx_stops_geom ON transport_stops USING gist (geom);
 CREATE INDEX idx_stops_geom_center ON transport_stops USING gist (geom_center);
 
 -- Create functions
-CREATE OR REPLACE FUNCTION RouteIsValid(route_id BIGINT, save_to_table BOOLEAN)
-RETURNS BOOLEAN as $$
+CREATE OR REPLACE FUNCTION RouteIsValid(route_id BIGINT, save_to_table BOOLEAN) RETURNS BOOLEAN as $$
 DECLARE
 	cur RECORD;
 	tmp BIGINT[];
@@ -174,8 +173,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION CheckRouteVer(route_id BIGINT)
-RETURNS SMALLINT as $$
+CREATE OR REPLACE FUNCTION CheckRouteVer(route_id BIGINT) RETURNS SMALLINT as $$
 DECLARE
 	i integer := 0;
 BEGIN
@@ -192,5 +190,37 @@ BEGIN
 	ELSE
 		RETURN 2;
 	END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION GetRouteGeom(route_id BIGINT) RETURNS geometry as $$
+DECLARE
+	route_geom geometry := null;
+BEGIN
+	route_geom:=(
+		SELECT
+			ST_LineMerge(ST_Union(ways.geom)) as geom
+		FROM
+			(SELECT
+				way_pos,
+				ST_makeLine(nodes.geom) as geom
+			FROM
+				(SELECT
+					relations.id as route_id,
+					t_nodes.node_pos as node_pos,
+					relation_members.sequence_id as way_pos,
+					relations.tstamp,
+					nodes.geom as geom
+				FROM relations, relation_members, ways, nodes, unnest(ways.nodes) WITH ORDINALITY AS t_nodes(node_id,node_pos)
+				WHERE
+					relations.id=route_id and
+					relations.id=relation_members.relation_id and
+					relation_members.member_role in('','forward','backward') and
+					relation_members.member_id=ways.id and
+					nodes.id = t_nodes.node_id
+				ORDER BY way_pos, node_pos) as nodes
+			GROUP BY way_pos) as ways);
+
+	RETURN route_geom;
 END;
 $$ LANGUAGE plpgsql;

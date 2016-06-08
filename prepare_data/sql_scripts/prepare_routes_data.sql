@@ -6,7 +6,7 @@
 	SELECT
 		routes.route_id as id,
 		routes.tstamp,
-		relations.tags,
+		routes.tags,
 		ST_SimplifyPreserveTopology(routes.geom,0.00001) as geom,
 		ST_Length(routes.geom, true) as length,
 		CheckRouteVer(routes.route_id) as version,
@@ -16,36 +16,17 @@
 			ELSE RouteIsValid(routes.route_id, false)
 		END as is_valid
 	FROM
-		relations,
 		(SELECT
-			route_id,
-			MAX(ways.tstamp) as tstamp,
-			ST_LineMerge(ST_Union(ways.geom)) as geom
+			relations.id as route_id,
+			relations.tags,
+			relations.tstamp as tstamp,
+			GetRouteGeom(relations.id) as geom
 		FROM
-			(SELECT
-				route_id,
-				way_pos,
-				MAX(nodes.tstamp) as tstamp,
-				ST_makeLine(nodes.geom) as geom
-			FROM
-				(SELECT
-					relations.id as route_id,
-					t_nodes.node_pos as node_pos,
-					relation_members.sequence_id as way_pos,
-					relations.tstamp,
-					nodes.geom as geom
-				FROM relations, relation_members, ways, nodes, unnest(ways.nodes) WITH ORDINALITY AS t_nodes(node_id,node_pos)
-				WHERE
-					relations.tags->'type'='route' and
-					relations.tags->'route' in ('bus','trolleybus','share_taxi','tram','train') and
-					relations.id=relation_members.relation_id and
-					relation_members.member_role in('','forward','backward') and
-					relation_members.member_id=ways.id and
-					nodes.id = t_nodes.node_id
-				ORDER BY way_pos, node_pos) as nodes
-			GROUP BY route_id, way_pos) as ways
-		GROUP BY route_id) as routes
-	WHERE routes.route_id=relations.id;
+			relations
+		WHERE
+			relations.tags->'type'='route' and
+			relations.tags->'route' in ('bus','trolleybus','share_taxi','tram','train')
+		) as routes
 END;
 
 ------------------------------------------------------------------------
