@@ -177,7 +177,7 @@ CREATE OR REPLACE FUNCTION CheckRouteVer(route_id BIGINT) RETURNS SMALLINT as $$
 DECLARE
 	i integer := 0;
 BEGIN
-	i:=(
+	i := (
 	SELECT
 		count(member_role) as count
 	FROM relation_members
@@ -193,11 +193,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION GetRouteGeom(route_id BIGINT) RETURNS geometry as $$
+CREATE OR REPLACE FUNCTION GetRouteGeom(route_relation_id BIGINT) RETURNS geometry as $$
 DECLARE
 	route_geom geometry := null;
 BEGIN
-	route_geom:=(
+	route_geom := (
 		SELECT
 			ST_LineMerge(ST_Union(ways.geom)) as geom
 		FROM
@@ -206,15 +206,12 @@ BEGIN
 				ST_makeLine(nodes.geom) as geom
 			FROM
 				(SELECT
-					relations.id as route_id,
 					t_nodes.node_pos as node_pos,
 					relation_members.sequence_id as way_pos,
-					relations.tstamp,
 					nodes.geom as geom
-				FROM relations, relation_members, ways, nodes, unnest(ways.nodes) WITH ORDINALITY AS t_nodes(node_id,node_pos)
+				FROM relation_members, ways, nodes, unnest(ways.nodes) WITH ORDINALITY AS t_nodes(node_id,node_pos)
 				WHERE
-					relations.id=route_id and
-					relations.id=relation_members.relation_id and
+					relation_members.relation_id=route_relation_id and
 					relation_members.member_role in('','forward','backward') and
 					relation_members.member_id=ways.id and
 					nodes.id = t_nodes.node_id
